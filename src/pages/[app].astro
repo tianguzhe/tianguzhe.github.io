@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import { apps, download, repository } from '../data/apps';
+export function getStaticPaths() { return apps.map((app) => ({ params: { app: app.slug }, props: { app } })); }
+const { app } = Astro.props;
+const others = apps.filter((other) => other.slug !== app.slug);
+const schema = {
+  '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: app.name,
+  applicationCategory: app.slug === 'devpocket' ? 'DeveloperApplication' : 'UtilitiesApplication',
+  operatingSystem: 'macOS 14+', description: app.description,
+  url: new URL(`/${app.slug}/`, Astro.site).href,
+  image: new URL(app.screenshot, Astro.site).href,
+  downloadUrl: download(app), author: { '@type': 'Person', name: 'tian', url: 'https://github.com/tianguzhe' },
+};
+---
+<Layout title={`${app.name} · ${app.tagline} | tian`} description={app.description} image={app.screenshot}>
+  <main id="main" class={`product-page product-${app.slug}`} style={`--app-color:${app.color};--app-tint:${app.tint}`}>
+    <script type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, '\u003c')} />
+    <div class="container"><a class="back-link" href="/#apps">← 所有应用</a></div>
+    <section class="product-hero container">
+      <div class="product-copy">
+        <div class="product-identity"><img src={app.icon} width="68" height="68" alt="" /><div><span class="product-name">{app.name}</span><span class="product-category">{app.category} <span class="middot">/</span> 原生 macOS 应用</span></div></div>
+        <h1>{app.headline[0]}<br /><span>{app.headline[1]}</span></h1>
+        <p class="product-description">{app.description}</p>
+        <div class="product-actions"><a class="button primary" href={download(app)}><Icon name="download" size={18} /> 下载 {app.name}</a><a class="button secondary" href={repository(app)} target="_blank" rel="noopener noreferrer"><Icon name="github" size={18} /> 查看源码</a></div>
+        <p class="download-meta">macOS 14+<span class="middot">·</span>Apple Silicon & Intel<span class="middot">·</span>DMG</p>
+        <a class="installation-link" href="#install">首次安装？查看安装说明 <Icon name="arrow" size={14} /></a>
+      </div>
+      <div class="product-visual"><div class="product-screenshot"><img src={app.screenshot} alt={app.screenshotAlt} width={app.screenshotWidth} height={app.screenshotHeight} fetchpriority="high" /></div><span class="visual-caption">{app.caption}</span></div>
+    </section>
+
+    <section class="features-section container" aria-label={`${app.name} 核心功能`}><div class="features-grid">{app.features.map((feature) => <article><span class="feature-icon"><Icon name={feature.icon} size={24} /></span><h2>{feature.title}</h2><p>{feature.text}</p></article>)}</div></section>
+
+    {app.slug === 'macclean' && <section class="detail-section container"><div class="section-heading"><div><p class="eyebrow">KNOW BEFORE YOU CLEAN</p><h2>每一次整理，<br />都更有把握。</h2></div><p class="section-aside">查看目录、读懂范围，<br />再决定要不要清理。</p></div><figure class="detail-image"><img src="/images/macclean-commands.png" alt="MacClean 工具详情展示目录占用、官方清理命令、文档链接与适用范围" width="640" height="720" loading="lazy" /><figcaption>工具详情中的占用、路径与清理说明。</figcaption></figure></section>}
+
+    <section class="steps-section container"><div class="section-heading"><div><p class="eyebrow">GET INTO YOUR FLOW</p><h2>几步，就上手。</h2></div></div><ol class="steps-grid">{app.steps.map((step, index) => <li><span class="step-number">0{index + 1}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol></section>
+
+    <section id="install" class="installation-section container"><div class="installation-panel"><div><p class="eyebrow">A QUICK START</p><h2>装好，<br />就能开始。</h2><p>一个安装包，兼容 Apple Silicon 与 Intel。</p></div><div class="installation-content"><ol><li><span>1</span><p><a href={download(app)}>下载最新 DMG</a>，打开安装包。</p></li><li><span>2</span><p>将 <strong>{app.name}</strong> 拖入「应用程序」。</p></li><li><span>3</span><p>从「应用程序」打开，开始使用。</p></li></ol><div class="installation-note"><strong>首次打开提示</strong><p>目前安装包采用 ad-hoc 签名，尚未经过 Apple 公证。如被 macOS 拦截，请在「系统设置 → 隐私与安全性」中允许打开。</p></div><a class="text-link" href={`${repository(app)}/releases/latest`} target="_blank" rel="noopener noreferrer">版本说明与 SHA-256 校验 <Icon name="diagonal" size={14} /></a></div></div></section>
+
+    <section class="faq-section container"><div class="faq-heading"><p class="eyebrow">GOOD TO KNOW</p><h2>你可能还想知道。</h2><p>还有其他问题？<br /><a class="text-link" href={`${repository(app)}/issues`} target="_blank" rel="noopener noreferrer">到 GitHub 反馈 <Icon name="diagonal" size={14} /></a></p></div><div class="faq-list">{app.faqs.map((faq) => <details><summary>{faq.question}<span class="faq-plus" aria-hidden="true">+</span></summary><p>{faq.answer}</p></details>)}</div></section>
+
+    <section class="download-section container"><div class="download-panel"><img src={app.icon} alt="" width="80" height="80" loading="lazy" /><h2>让 {app.name}<br class="mobile-break" /> 成为你的顺手工具。</h2><p>原生体验，本机运行，为每天的使用而做。</p><a class="button primary" href={download(app)}><Icon name="download" size={18} /> 下载最新版本</a><span class="download-meta">macOS 14+ · Apple Silicon & Intel</span></div></section>
+
+    <section class="more-apps container"><div class="more-apps-heading"><h2>还有这些小工具。</h2><a class="text-link" href="/#apps">查看全部 <Icon name="arrow" size={16} /></a></div><div class="more-apps-grid">{others.map((other) => <a href={`/${other.slug}/`}><img src={other.icon} width="48" height="48" alt="" loading="lazy" /><span><strong>{other.name}</strong><small>{other.tagline}</small></span><Icon name="arrow" size={18} /></a>)}</div></section>
+  </main>
+</Layout>

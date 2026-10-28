@@ -1,0 +1,43 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import AppCard from '../components/AppCard.astro';
+import { apps } from '../data/apps';
+---
+<Layout title="tian · 为 Mac 打造轻巧、实用的原生工具" description="发现 tian 制作的四款原生 Mac 应用：DevPocket 开发工具箱、MacClean 磁盘分析、LanguageSwitcher 应用语言切换、QuietLock 息屏与屏保控制。">
+  <main id="main">
+    <section class="home-hero container">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot"></span> INDEPENDENT APPS FOR MAC</p>
+        <h1>小而美的工具，<br />让 Mac <span class="serif-accent">更顺手。</span></h1>
+        <p class="hero-description">从开发中的一次转换，到工作时的一点专注。<br class="desktop-break" />我把日常遇到的小问题，做成了这几个小应用。</p>
+        <a href="#apps" class="button primary">发现我的应用 <Icon name="arrow" size={18} /></a>
+        <div class="hero-footnote"><Icon name="apple" size={15} /><span>macOS 14+<span class="middot">·</span>Apple Silicon & Intel</span></div>
+      </div>
+      <div class="orbital-scene" aria-label="四款原生 Mac 应用">
+        <div class="orbit-ring ring-one" aria-hidden="true"></div><div class="orbit-ring ring-two" aria-hidden="true"></div>
+        <div class="orbit-center" aria-hidden="true">⌘</div>
+        {apps.map((app, index) => <a class={`floating-app float-${index + 1}`} href={`/${app.slug}/`} style={`--app-tint:${app.tint}`}><img src={app.icon} width="100" height="100" alt="" fetchpriority={index === 0 ? 'high' : 'auto'} /><span>{app.name}</span><small>{app.category}</small></a>)}
+        <span class="scene-spark spark-one" aria-hidden="true">✳</span><span class="scene-spark spark-two" aria-hidden="true">+</span>
+        <span class="scene-caption" aria-hidden="true">A little less friction. A little more flow.</span>
+      </div>
+    </section>
+
+    <div class="container"><div class="principles-strip"><span><span class="mini-dot"></span> 4 款独立应用</span><span><Icon name="command" size={17} /> 原生 macOS 体验</span><span><Icon name="shield" size={17} /> 本机处理</span><span><Icon name="code" size={18} /> 源码公开可见</span></div></div>
+
+    <section id="apps" class="apps-section container">
+      <div class="section-heading"><div><p class="eyebrow">THE COLLECTION</p><h2>各有所长，<span class="muted-heading">都很顺手。</span></h2></div><p class="section-aside">为具体的小事而做，<br />也为每天的使用而打磨。</p></div>
+      <div class="apps-grid">{apps.map((app, index) => <AppCard app={app} index={index} />)}</div>
+    </section>
+
+    <section id="about" class="about-section container">
+      <div class="about-intro"><p class="eyebrow">SMALL APPS, THOUGHTFULLY MADE</p><h2>少一点打断，<br />多一点<span class="serif-accent">得心应手。</span></h2><p>你好，我是 tian。写代码，也做自己想用的 Mac 工具。<br />从一个具体需求开始，让每个应用把自己的事情做好。</p><a class="text-link" href="https://github.com/tianguzhe" target="_blank" rel="noopener noreferrer">在 GitHub 上找到我 <Icon name="diagonal" size={16} /></a></div>
+      <div class="about-values">
+        <div><span class="value-icon"><Icon name="command" size={21} /></span><div><h3>像 Mac 应用一样自然</h3><p>使用 SwiftUI 与系统能力，照顾快捷键、界面细节和日常操作习惯。</p></div></div>
+        <div><span class="value-icon"><Icon name="shield" size={21} /></span><div><h3>在本机，完成手边的事</h3><p>文本转换、磁盘分析与系统操作，都在你的 Mac 上完成，无需注册账号。</p></div></div>
+        <div><span class="value-icon"><Icon name="code" size={21} /></span><div><h3>做了什么，看得见</h3><p>每个应用都提供源码、使用文档与问题反馈入口，方便了解，也欢迎交流。</p></div></div>
+      </div>
+    </section>
+    <section class="home-outro container"><span class="outro-star" aria-hidden="true">✳</span><p>好的工具，让你专注于原本想做的事。</p><a href="#apps" class="text-link">找到你的那一个 <Icon name="arrow" size={18} /></a></section>
+  </main>
+</Layout>

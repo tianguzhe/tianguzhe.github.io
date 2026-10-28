@@ -1,0 +1,56 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+interface Props { title: string; description: string; image?: string; noindex?: boolean }
+const { title, description, image = '/images/social.png', noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const socialImage = new URL(image, Astro.site);
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8f9f5" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="tian · Apps for Mac" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="/" aria-label="tian 应用站首页"><span class="brand-mark">t.</span><span>tian<span class="brand-divider">/</span><span class="brand-caption">Apps for Mac</span></span></a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="/#apps">所有应用</a>
+          <a href="/#about">关于</a>
+          <a class="github-link" href="https://github.com/tianguzhe" target="_blank" rel="noopener noreferrer"><Icon name="github" size={17} /> GitHub <Icon name="diagonal" size={14} /></a>
+        </nav>
+        <details class="mobile-menu">
+          <summary>导航 <Icon name="chevron" size={16} /></summary>
+          <nav aria-label="移动端导航"><a href="/#apps">所有应用</a><a href="/#about">关于</a><a href="https://github.com/tianguzhe">GitHub ↗</a></nav>
+        </details>
+      </div>
+    </header>
+    <slot />
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <a class="brand footer-brand" href="/"><span class="brand-mark">t.</span><span>小工具，也值得用心。</span></a>
+        <div class="footer-meta"><span>© {new Date().getUTCFullYear()} tian</span><a href="https://github.com/tianguzhe/tianguzhe.github.io" target="_blank" rel="noopener noreferrer">网站源码 <Icon name="diagonal" size={13} /></a><span class="footer-note">Made for Mac. Made with care.</span></div>
+      </div>
+    </footer>
+  </body>
+</html>
