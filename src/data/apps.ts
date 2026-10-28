@@ -26,7 +26,7 @@ export const apps: App[] = [
     headline: ['一个小工具，', '少一点打断。'],
     description: 'JSON 格式化、时间戳转换、编码解码、AES 与二维码。把开发中常用的小操作，收进一个原生 Mac 工具箱。',
     icon: '/images/devpocket-icon.png', screenshot: '/images/devpocket-preview.png',
-    screenshotWidth: 1120, screenshotHeight: 760,
+    screenshotWidth: 2240, screenshotHeight: 1520,
     screenshotAlt: 'DevPocket 的 JSON 工作台，左侧为工具列表，右侧并排显示输入和格式化结果',
     caption: '熟悉的双栏工作台，输入与结果一目了然。',
     features: [
@@ -52,10 +52,10 @@ export const apps: App[] = [
     tagline: '给开发，留点空间',
     headline: ['开发缓存，', '看清再清理。'],
     description: '找出构建缓存、依赖下载与编辑器资料的占用。看清空间去了哪里，再决定如何整理你的开发环境。',
-    icon: '/images/macclean-icon.png', screenshot: '/images/macclean-overview.png',
-    screenshotWidth: 1220, screenshotHeight: 840,
+    icon: '/images/macclean-icon.png', screenshot: '/images/macclean-overview-v2.png',
+    screenshotWidth: 2440, screenshotHeight: 1580,
     screenshotAlt: 'MacClean 空间总览，按开发生态展示缓存占用和磁盘空间',
-    caption: '从磁盘总览到工具明细，找到真正占空间的地方。',
+    caption: '从磁盘总览到工具明细，找到空间的去向。图中为示例数据。',
     features: [
       { icon: 'layers', title: '开发缓存，集中查看', text: '覆盖 Apple、JavaScript、JVM、Python 等开发生态，识别常见工具的默认缓存目录。' },
       { icon: 'folder', title: '缓存与资料，分开统计', text: '区分编辑器缓存、配置与插件。查看文件数量、目录明细，并在 Finder 中定位。' },
@@ -80,7 +80,7 @@ export const apps: App[] = [
     headline: ['换一种语言，', '打开熟悉的应用。'],
     description: '无需更改系统语言。拖入一个 Mac 应用，选择它内置的语言，用你想要的语言启动这一次。',
     icon: '/images/languageswitcher-icon.png', screenshot: '/images/languageswitcher-preview-v2.png',
-    screenshotWidth: 740, screenshotHeight: 680,
+    screenshotWidth: 1480, screenshotHeight: 1360,
     screenshotAlt: 'LanguageSwitcher 识别 Safari 的内置语言，显示可搜索的语言列表',
     caption: '拖入应用，选好语言，开始使用。',
     features: [

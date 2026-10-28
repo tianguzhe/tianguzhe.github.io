@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
+import OptimizedImage from '../components/OptimizedImage.astro';
+import MacCleanDetails from '../components/MacCleanDetails.astro';
 import { apps, download, repository } from '../data/apps';
 export function getStaticPaths() { return apps.map((app) => ({ params: { app: app.slug }, props: { app } })); }
 const { app } = Astro.props;
@@ -14,25 +16,25 @@ const schema = {
   downloadUrl: download(app), author: { '@type': 'Person', name: 'tian', url: 'https://github.com/tianguzhe' },
 };
 ---
-<Layout title={`${app.name} · ${app.tagline} | tian`} description={app.description} image={app.screenshot}>
-  <main id="main" class={`product-page product-${app.slug}`} style={`--app-color:${app.color};--app-tint:${app.tint}`}>
+<Layout title={`${app.name} · ${app.tagline} | tian`} description={app.description} image={`/images/social-${app.slug}.png`} imageAlt={`${app.name} · ${app.tagline}`}>
+  <main id="main" tabindex="-1" class={`product-page product-${app.slug}`} style={`--app-color:${app.color};--app-tint:${app.tint}`}>
     <script type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, '\u003c')} />
     <div class="container"><a class="back-link" href="/#apps">← 所有应用</a></div>
     <section class="product-hero container">
       <div class="product-copy">
-        <div class="product-identity"><img src={app.icon} width="68" height="68" alt="" /><div><span class="product-name">{app.name}</span><span class="product-category">{app.category} <span class="middot">/</span> 原生 macOS 应用</span></div></div>
+        <div class="product-identity"><OptimizedImage src={app.icon} width="68" height="68" alt="" /><div><span class="product-name">{app.name}</span><span class="product-category">{app.category} <span class="middot">/</span> 原生 macOS 应用</span></div></div>
         <h1>{app.headline[0]}<br /><span>{app.headline[1]}</span></h1>
         <p class="product-description">{app.description}</p>
         <div class="product-actions"><a class="button primary" href={download(app)}><Icon name="download" size={18} /> 下载 {app.name}</a><a class="button secondary" href={repository(app)} target="_blank" rel="noopener noreferrer"><Icon name="github" size={18} /> 查看源码</a></div>
         <p class="download-meta">macOS 14+<span class="middot">·</span>Apple Silicon & Intel<span class="middot">·</span>DMG</p>
         <a class="installation-link" href="#install">首次安装？查看安装说明 <Icon name="arrow" size={14} /></a>
       </div>
-      <div class="product-visual" data-tilt><a class="product-screenshot" href={app.screenshot} data-preview aria-label={`放大查看 ${app.name} 界面`}><img src={app.screenshot} alt={app.screenshotAlt} width={app.screenshotWidth} height={app.screenshotHeight} fetchpriority="high" /><span class="screenshot-hint"><Icon name="search" size={16} /> 放大预览</span></a><span class="visual-caption">{app.caption}</span></div>
+      <div class="product-visual" data-tilt><a class="product-screenshot" href={app.screenshot} data-preview aria-label={`放大查看 ${app.name} 界面`}><OptimizedImage src={app.screenshot} alt={app.screenshotAlt} width={app.screenshotWidth} height={app.screenshotHeight} sizes="(max-width: 720px) calc(100vw - 80px), (max-width: 1100px) calc(50vw - 70px), 500px" fetchpriority="high" /><span class="screenshot-hint"><Icon name="search" size={16} /> 放大预览</span></a><span class="visual-caption">{app.caption}</span></div>
     </section>
 
     <section class="features-section container" aria-label={`${app.name} 核心功能`}><div class="features-grid">{app.features.map((feature, index) => <article data-reveal data-reveal-delay={index * 80}><span class="feature-icon"><Icon name={feature.icon} size={24} /></span><h2>{feature.title}</h2><p>{feature.text}</p></article>)}</div></section>
 
-    {app.slug === 'macclean' && <section class="detail-section container"><div class="section-heading"><div><p class="eyebrow">KNOW BEFORE YOU CLEAN</p><h2>每一次整理，<br />都更有把握。</h2></div><p class="section-aside">查看目录、读懂范围，<br />再决定要不要清理。</p></div><figure class="detail-image"><img src="/images/macclean-commands.png" alt="MacClean 工具详情展示目录占用、官方清理命令、文档链接与适用范围" width="640" height="720" loading="lazy" /><figcaption>工具详情中的占用、路径与清理说明。</figcaption></figure></section>}
+    {app.slug === 'macclean' && <MacCleanDetails />}
 
     <section class="steps-section container"><div class="section-heading" data-reveal><div><p class="eyebrow">GET INTO YOUR FLOW</p><h2>几步，就上手。</h2></div></div><ol class="steps-grid">{app.steps.map((step, index) => <li data-reveal data-reveal-delay={index * 80}><span class="step-number">0{index + 1}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol></section>
 
@@ -40,9 +42,13 @@ const schema = {
 
     <section class="faq-section container"><div class="faq-heading"><p class="eyebrow">GOOD TO KNOW</p><h2>你可能还想知道。</h2><p>还有其他问题？<br /><a class="text-link" href={`${repository(app)}/issues`} target="_blank" rel="noopener noreferrer">到 GitHub 反馈 <Icon name="diagonal" size={14} /></a></p></div><div class="faq-list">{app.faqs.map((faq) => <details><summary>{faq.question}<span class="faq-plus" aria-hidden="true">+</span></summary><p>{faq.answer}</p></details>)}</div></section>
 
-    <section class="download-section container"><div class="download-panel" data-reveal><img src={app.icon} alt="" width="80" height="80" loading="lazy" /><h2>让 {app.name}<br class="mobile-break" /> 成为你的顺手工具。</h2><p>原生体验，本机运行，为每天的使用而做。</p><a class="button primary" href={download(app)}><Icon name="download" size={18} /> 下载最新版本</a><span class="download-meta">macOS 14+ · Apple Silicon & Intel</span></div></section>
+    <section class="download-section container"><div class="download-panel" data-reveal><OptimizedImage src={app.icon} alt="" width="80" height="80" loading="lazy" /><h2>让 {app.name}<br class="mobile-break" /> 成为你的顺手工具。</h2><p>原生体验，本机运行，为每天的使用而做。</p><a class="button primary" href={download(app)}><Icon name="download" size={18} /> 下载最新版本</a><span class="download-meta">macOS 14+ · Apple Silicon & Intel</span></div></section>
 
-    <section class="more-apps container"><div class="more-apps-heading"><h2>还有这些小工具。</h2><a class="text-link" href="/#apps">查看全部 <Icon name="arrow" size={16} /></a></div><div class="more-apps-grid">{others.map((other) => <a href={`/${other.slug}/`}><img src={other.icon} width="48" height="48" alt="" loading="lazy" /><span><strong>{other.name}</strong><small>{other.tagline}</small></span><Icon name="arrow" size={18} /></a>)}</div></section>
+    <section class="more-apps container"><div class="more-apps-heading"><h2>还有这些小工具。</h2><a class="text-link" href="/#apps">查看全部 <Icon name="arrow" size={16} /></a></div><div class="more-apps-grid">{others.map((other) => <a href={`/${other.slug}/`}><OptimizedImage src={other.icon} width="48" height="48" alt="" loading="lazy" /><span><strong>{other.name}</strong><small>{other.tagline}</small></span><Icon name="arrow" size={18} /></a>)}</div></section>
   </main>
-  <dialog class="image-dialog" aria-label={`${app.name} 界面预览`}><form method="dialog"><button class="dialog-close" aria-label="关闭界面预览">关闭 <span aria-hidden="true">×</span></button></form><img src={app.screenshot} alt={app.screenshotAlt} width={app.screenshotWidth} height={app.screenshotHeight} loading="lazy" /><p>{app.caption}</p></dialog>
+  <dialog class="image-dialog" aria-label={`${app.name} 界面预览`}>
+    <div class="dialog-toolbar"><button type="button" class="dialog-zoom" data-preview-zoom aria-pressed="false">放大阅读</button><a class="dialog-original" href={app.screenshot} target="_blank" rel="noopener noreferrer">查看原图 <Icon name="diagonal" size={13} /></a><form method="dialog"><button class="dialog-close" aria-label="关闭界面预览">关闭 <span aria-hidden="true">×</span></button></form></div>
+    <div class="dialog-image-frame" tabindex="0" role="region" aria-label="截图内容，放大后可滚动查看"><img data-dialog-image alt={app.screenshotAlt} width={app.screenshotWidth} height={app.screenshotHeight} /></div>
+    <p>{app.caption}</p>
+  </dialog>
 </Layout>

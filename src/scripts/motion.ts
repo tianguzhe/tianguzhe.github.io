@@ -121,12 +121,45 @@ document.addEventListener('click', (event) => {
 
 const dialog = document.querySelector<HTMLDialogElement>('.image-dialog');
 if (dialog && typeof dialog.showModal === 'function') {
+  const previewImage = dialog.querySelector('img');
+  const previewCaption = dialog.querySelector('p');
+  const zoomButton = dialog.querySelector<HTMLButtonElement>('[data-preview-zoom]');
+  const originalLink = dialog.querySelector<HTMLAnchorElement>('.dialog-original');
+  const previewFrame = dialog.querySelector<HTMLElement>('.dialog-image-frame');
+  let previewTrigger: HTMLAnchorElement | null = null;
+  function resetPreview() {
+    dialog?.classList.remove('is-zoomed');
+    zoomButton?.setAttribute('aria-pressed', 'false');
+    if (zoomButton) zoomButton.textContent = '放大阅读';
+    if (previewFrame) previewFrame.scrollTop = previewFrame.scrollLeft = 0;
+  }
   document.querySelectorAll<HTMLAnchorElement>('[data-preview]').forEach((link) => {
     link.addEventListener('click', (event) => {
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
+      const source = link.querySelector('img');
+      if (!source || !previewImage) return;
+      previewTrigger = link;
+      previewImage.src = link.href;
+      previewImage.alt = source.alt;
+      previewImage.width = Number(source.getAttribute('width')) || source.naturalWidth;
+      previewImage.height = Number(source.getAttribute('height')) || source.naturalHeight;
+      dialog.style.setProperty('--preview-width', `${source.getAttribute('width')}px`);
+      if (originalLink) originalLink.href = link.href;
+      resetPreview();
+      if (previewCaption) previewCaption.textContent = link.dataset.previewCaption ?? link.closest('.product-visual')?.querySelector('.visual-caption')?.textContent ?? source.alt;
       if (!dialog.open) dialog.showModal();
     });
+  });
+  zoomButton?.addEventListener('click', () => {
+    const zoomed = dialog.classList.toggle('is-zoomed');
+    zoomButton.setAttribute('aria-pressed', String(zoomed));
+    zoomButton.textContent = zoomed ? '适应窗口' : '放大阅读';
+    if (previewFrame) previewFrame.scrollTop = previewFrame.scrollLeft = 0;
+  });
+  dialog.addEventListener('close', () => {
+    resetPreview();
+    previewTrigger?.focus({ preventScroll: true });
   });
   dialog.addEventListener('click', (event) => {
     if (event.target === dialog) {

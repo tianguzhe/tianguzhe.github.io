@@ -1,11 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
+import OptimizedImage from '../components/OptimizedImage.astro';
 import AppCard from '../components/AppCard.astro';
 import { apps } from '../data/apps';
 ---
 <Layout title="tian · 为 Mac 打造轻巧、实用的原生工具" description="发现 tian 制作的四款原生 Mac 应用：DevPocket 开发工具箱、MacClean 磁盘分析、LanguageSwitcher 应用语言切换、QuietLock 息屏与屏保控制。">
-  <main id="main">
+  <main id="main" tabindex="-1">
     <section class="home-hero container">
       <div class="hero-copy">
         <p class="eyebrow"><span class="status-dot"></span> INDEPENDENT APPS FOR MAC</p>
@@ -17,7 +18,7 @@ import { apps } from '../data/apps';
       <div class="orbital-scene" aria-label="四款原生 Mac 应用">
         <div class="orbit-tracks" aria-hidden="true"><div class="orbit-ring ring-one"></div><div class="orbit-ring ring-two"></div></div>
         <div class="orbit-center" aria-hidden="true"><span>⌘</span><small>NATIVE BY NATURE</small></div>
-        {apps.map((app, index) => <a class={`floating-app float-${index + 1}`} href={`/${app.slug}/`} style={`--app-tint:${app.tint};--float-delay:${index * -1.8}s`}><span class="floating-icon"><img src={app.icon} width="120" height="120" alt="" fetchpriority={index === 0 ? 'high' : 'auto'} /></span><span class="floating-name">{app.name}</span><small>{app.category}</small></a>)}
+        {apps.map((app, index) => <a class={`floating-app float-${index + 1}`} href={`/${app.slug}/`} style={`--app-tint:${app.tint};--float-delay:${index * -1.8}s`}><span class="floating-icon"><OptimizedImage src={app.icon} width="120" height="120" alt="" fetchpriority={index === 0 ? 'high' : 'auto'} /></span><span class="floating-name">{app.name}</span><small>{app.category}</small></a>)}
         <span class="scene-spark spark-one" aria-hidden="true">✳</span><span class="scene-spark spark-two" aria-hidden="true">+</span>
         <span class="scene-caption" aria-hidden="true">A little less friction. A little more flow.</span>
       </div>

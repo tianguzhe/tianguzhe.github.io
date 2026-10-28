@@ -4,12 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev --host 127.0.0.1",
-    "build": "astro build",
+    "images": "bun scripts/optimize-images.mjs",
+    "dev": "bun run images && astro dev --host 127.0.0.1",
+    "build": "bun run images && astro build",
     "preview": "astro preview --host 127.0.0.1",
     "check:site": "node scripts/check-site.mjs"
   },
   "dependencies": {
     "astro": "7.4.2"
+  },
+  "devDependencies": {
+    "sharp": "0.35.5"
   }
 }

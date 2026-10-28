@@ -28,10 +28,21 @@ for (const file of htmlFiles) {
   assert.match(html, /name="description" content="[^"]+"/, `Missing description: ${file}`);
   assert.match(html, /name="viewport"/, `Missing viewport: ${file}`);
   assert.match(html, /rel="canonical" href="https:\/\/tianguzhe\.github\.io\//, `Missing canonical: ${file}`);
+  const shareImage = html.match(/property="og:image" content="([^"]+)"/)?.[1];
+  assert.ok(shareImage, `Missing share image: ${file}`);
+  assert.ok(existsSync(join(root, new URL(shareImage).pathname)), `Missing share image asset: ${file}`);
+  assert.match(html, /property="og:image:alt" content="[^"]+"/, `Missing share image description: ${file}`);
   for (const tag of html.matchAll(/<img\b[^>]*>/g)) {
-    assert.match(tag[0], /\balt="[^"]*"/, `Missing image alt: ${file}`);
+    assert.match(tag[0], /\balt(?:="[^"]*")?(?=\s|>)/, `Missing image alt: ${file}`);
     assert.match(tag[0], /\bwidth="\d+"/, `Missing image width: ${file}`);
     assert.match(tag[0], /\bheight="\d+"/, `Missing image height: ${file}`);
+  }
+  for (const match of html.matchAll(/\bsrcset="([^"]+)"/g)) {
+    for (const candidate of match[1].split(',')) {
+      const source = candidate.trim().split(/\s+/)[0];
+      assert.ok(existsSync(join(root, source)), `Missing responsive image: ${source}`);
+      references++;
+    }
   }
   for (const match of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
     const value = match[1].replaceAll('&amp;', '&');

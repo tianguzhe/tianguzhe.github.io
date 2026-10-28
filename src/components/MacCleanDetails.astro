@@ -1,0 +1,32 @@
+---
+import Icon from './Icon.astro';
+import OptimizedImage from './OptimizedImage.astro';
+const details = [
+  { title: '占了多少，一眼看清', text: '磁盘占用、逻辑大小与文件数量放在一起，空间开销有据可查。' },
+  { title: '沿着目录，找到来源', text: '查看具体路径和占用较大的子项，需要时直接在 Finder 中定位。' },
+  { title: '读懂命令，再做决定', text: '清理命令附有官方文档与范围说明。确认后复制到终端，由你执行。' },
+];
+---
+<section class="macclean-details container" aria-labelledby="detail-title">
+  <div class="section-heading" data-reveal>
+    <div><p class="eyebrow">A CLOSER LOOK</p><h2 id="detail-title">清理之前，<br />先把细节看清。</h2></div>
+    <p class="section-aside">从空间总览，深入每一个目录。</p>
+  </div>
+  <div class="inspector-layout">
+    <div class="inspector-copy" data-reveal>
+      <span class="inspector-label"><span></span> 每一份占用，都有来处</span>
+      <ol class="inspector-points">
+        {details.map((detail, index) => <li><span class="inspector-number">0{index + 1}</span><div><h3>{detail.title}</h3><p>{detail.text}</p></div></li>)}
+      </ol>
+      <p class="inspector-note"><Icon name="shield" size={18} /><span>只读分析，数据留在本机。<br />整理的决定，始终交给你。</span></p>
+    </div>
+    <figure class="inspector-stage" data-reveal data-reveal-delay="100">
+      <div class="inspector-stage-heading"><span>TOOL INSPECTOR</span><span class="inspector-status">npm · 工具详情</span></div>
+      <a class="inspector-shot" href="/images/macclean-detail-v2.png" data-preview data-preview-caption="MacClean 原生工具详情 · 使用示例数据展示" aria-label="放大查看 MacClean 工具详情">
+        <OptimizedImage sizes="(max-width: 720px) calc(100vw - 72px), (max-width: 1100px) calc(50vw - 65px), 550px" src="/images/macclean-detail-v2.png" alt="MacClean 的 npm 工具详情：磁盘占用、清理命令、所在目录与占用明细" width="1280" height="1440" loading="lazy" />
+        <span class="screenshot-hint"><Icon name="search" size={16} /> 放大查看细节</span>
+      </a>
+      <figcaption><span>原生界面 · 示例数据</span><span>看清范围，再动手</span></figcaption>
+    </figure>
+  </div>
+</section>

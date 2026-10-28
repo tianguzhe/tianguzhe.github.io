@@ -1,7 +1,8 @@
 :root {
   --bg:#f8f9f5;
   --ink:#242f29;
-  --muted:#63705f;
+  --muted:#596951;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --green:#245d43;
   --line:#e0e5db;
   --serif:'Iowan Old Style','Palatino Linotype','Songti SC',serif;
@@ -140,7 +141,7 @@ a:focus-visible,summary:focus-visible {
   font-size:12px;
   letter-spacing:2.1px;
   font-weight:650;
-  color:#6e7f6d;
+  color:var(--muted);
   display:flex;
   align-items:center;
   gap:9px;
@@ -365,7 +366,7 @@ a:focus-visible,summary:focus-visible {
   margin-right:3px;
 }
 .principles-strip svg {
-  color:#7d8e73;
+  color:var(--muted);
 }
 .apps-section {
   padding-top:93px;
@@ -386,13 +387,13 @@ a:focus-visible,summary:focus-visible {
   margin-top:13px;
 }
 .muted-heading {
-  color:#8b9583;
+  color:var(--muted);
   font-weight:450;
 }
 .section-aside {
   font-size:14px;
   line-height:1.9;
-  color:#69765f;
+  color:var(--muted);
   padding-bottom:2px;
 }
 .apps-grid {
@@ -646,7 +647,7 @@ a:focus-visible,summary:focus-visible {
   align-items:center;
   gap:24px;
   font-size:11px;
-  color:#6c7c63;
+  color:var(--muted);
 }
 .footer-meta>a {
   display:flex;
@@ -700,7 +701,7 @@ a:focus-visible,summary:focus-visible {
 }
 .product-category {
   font-size:12px;
-  color:#68795e;
+  color:var(--muted);
 }
 .product-hero h1 {
   font-size:42px;
@@ -731,7 +732,7 @@ a:focus-visible,summary:focus-visible {
   padding-inline:17px;
 }
 .download-meta {
-  color:#697a5e;
+  color:var(--muted);
   font-size:11px;
   line-height:1.8;
   margin-top:17px;
@@ -739,7 +740,7 @@ a:focus-visible,summary:focus-visible {
 .installation-link {
   font-size:12px;
   margin-top:11px;
-  color:#65795a;
+  color:var(--muted);
   display:inline-flex;
   gap:5px;
   align-items:center;
@@ -772,7 +773,7 @@ a:focus-visible,summary:focus-visible {
   display:block;
   font-size:11px;
   text-align:center;
-  color:#65785b;
+  color:var(--muted);
   margin-top:21px;
   line-height:1.8;
 }
@@ -829,7 +830,7 @@ a:focus-visible,summary:focus-visible {
 .step-number {
   font-family:var(--serif);
   font-size:32px;
-  color:#a1b391;
+  color:#697c5e;
   font-weight:400;
 }
 .steps-grid h3 {
@@ -864,7 +865,7 @@ a:focus-visible,summary:focus-visible {
 }
 .installation-panel>div>p:not(.eyebrow) {
   font-size:13px;
-  color:#637756;
+  color:var(--muted);
   line-height:1.9;
   margin-top:16px;
 }
@@ -894,7 +895,7 @@ a:focus-visible,summary:focus-visible {
 }
 .installation-content li p {
   font-size:14px;
-  color:#6d7e60;
+  color:var(--muted);
   line-height:1.9;
 }
 .installation-content li a {
@@ -917,7 +918,7 @@ a:focus-visible,summary:focus-visible {
 .installation-note>p {
   font-size:13px;
   line-height:1.95;
-  color:#64795a;
+  color:var(--muted);
   margin-top:7px;
 }
 .installation-content>.text-link {
@@ -939,7 +940,7 @@ a:focus-visible,summary:focus-visible {
 }
 .faq-heading>p:last-child {
   font-size:13px;
-  color:#687a5d;
+  color:var(--muted);
   line-height:2.1;
   margin-top:21px;
 }
@@ -1008,7 +1009,7 @@ a:focus-visible,summary:focus-visible {
 }
 .download-panel>p {
   font-size:14px;
-  color:#637957;
+  color:var(--muted);
   margin-top:12px;
 }
 .download-panel>.button {
