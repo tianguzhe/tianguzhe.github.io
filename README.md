@@ -25,6 +25,8 @@ bun run preview
 - `src/pages/index.astro`：个人首页。
 - `src/pages/[app].astro`：共用产品页模板，自动生成四个独立路由。
 - `src/styles/global.css`：响应式界面与动效设置。
+- `src/styles/display.css`：展示样式、入场、图标浮动和悬停动效。
+- `src/scripts/motion.ts`：滚动显现、动效偏好、移动导航与截图放大预览。
 - `public/images/`：原有应用图标与界面截图，全部本地托管。
 
 新增应用时，在数据中增加条目，并更新 `scripts/check-site.mjs` 的路由列表及页面数量。下载链接使用 GitHub Releases 的 `latest/download` 地址，无需在应用每次发版后更新网站。
@@ -36,6 +38,8 @@ GitHub 仓库名必须为 `tianguzhe.github.io`。仓库 Settings → Pages 的 
 推送 `main` 后，`.github/workflows/deploy.yml` 自动安装锁定依赖、构建、检查并发布。Pull Request 只验证，不发布。
 
 网站附带页面元数据、分享卡片、SoftwareApplication 结构化数据、站点地图、robots.txt 与自定义 404 页面。没有统计脚本、外部字体或运行时 API 请求。
+
+动效遵循系统“减少动态效果”设置，也可使用页脚开关暂停。偏好仅保存在当前浏览器的本地存储中。滚动显现不阻塞内容展示；关闭 JavaScript 时仍可浏览全部内容，截图链接直接打开原图。截图预览支持 Escape 关闭，桌面指针效果仅用于支持悬停的精确指针设备。
 
 ## 素材来源
 

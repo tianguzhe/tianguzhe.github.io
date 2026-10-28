@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import '../styles/display.css';
 import Icon from '../components/Icon.astro';
 interface Props { title: string; description: string; image?: string; noindex?: boolean }
 const { title, description, image = '/images/social.png', noindex = false } = Astro.props;
@@ -35,8 +36,8 @@ const socialImage = new URL(image, Astro.site);
       <div class="container header-inner">
         <a class="brand" href="/" aria-label="tian 应用站首页"><span class="brand-mark">t.</span><span>tian<span class="brand-divider">/</span><span class="brand-caption">Apps for Mac</span></span></a>
         <nav class="desktop-nav" aria-label="主导航">
-          <a href="/#apps">所有应用</a>
-          <a href="/#about">关于</a>
+          <a href="/#apps" data-nav-section="apps">所有应用</a>
+          <a href="/#about" data-nav-section="about">关于</a>
           <a class="github-link" href="https://github.com/tianguzhe" target="_blank" rel="noopener noreferrer"><Icon name="github" size={17} /> GitHub <Icon name="diagonal" size={14} /></a>
         </nav>
         <details class="mobile-menu">
@@ -49,8 +50,11 @@ const socialImage = new URL(image, Astro.site);
     <footer class="site-footer">
       <div class="container footer-inner">
         <a class="brand footer-brand" href="/"><span class="brand-mark">t.</span><span>小工具，也值得用心。</span></a>
-        <div class="footer-meta"><span>© {new Date().getUTCFullYear()} tian</span><a href="https://github.com/tianguzhe/tianguzhe.github.io" target="_blank" rel="noopener noreferrer">网站源码 <Icon name="diagonal" size={13} /></a><span class="footer-note">Made for Mac. Made with care.</span></div>
+        <div class="footer-meta"><span>© {new Date().getUTCFullYear()} tian</span><a href="https://github.com/tianguzhe/tianguzhe.github.io" target="_blank" rel="noopener noreferrer">网站源码 <Icon name="diagonal" size={13} /></a><button class="motion-toggle" type="button" data-motion-toggle aria-pressed="false" hidden><span class="motion-indicator" aria-hidden="true"></span><span data-motion-label>动效</span></button><span class="footer-note">Made with care.</span></div>
       </div>
     </footer>
+    <script>
+      import '../scripts/motion';
+    </script>
   </body>
 </html>
