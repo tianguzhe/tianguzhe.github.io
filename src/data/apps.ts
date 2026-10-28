@@ -79,7 +79,7 @@ export const apps: App[] = [
     tagline: '让应用，说你的语言',
     headline: ['换一种语言，', '打开熟悉的应用。'],
     description: '无需更改系统语言。拖入一个 Mac 应用，选择它内置的语言，用你想要的语言启动这一次。',
-    icon: '/images/languageswitcher-icon.png', screenshot: '/images/languageswitcher-preview.png',
+    icon: '/images/languageswitcher-icon.png', screenshot: '/images/languageswitcher-preview-v2.png',
     screenshotWidth: 740, screenshotHeight: 680,
     screenshotAlt: 'LanguageSwitcher 识别 Safari 的内置语言，显示可搜索的语言列表',
     caption: '拖入应用，选好语言，开始使用。',
