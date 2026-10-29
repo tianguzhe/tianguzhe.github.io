@@ -1,0 +1,21 @@
+---
+import Icon from './Icon.astro';
+const { slug } = Astro.props;
+const tools = [
+  ['braces', 'JSON', '整理结构，读懂数据'], ['refresh', '时间戳', '时间与日期，双向转换'],
+  ['globe', 'URL', '编码与解码'], ['code', 'Base64', '文本，换一种表达'],
+  ['shield', 'AES', '加密与解密'], ['layers', '二维码', '把内容变成一扫即得'],
+];
+---
+{slug === 'devpocket' && <section class="product-story container" aria-labelledby="story-title">
+  <div class="story-copy" data-reveal><p class="eyebrow">BUILT FOR YOUR WORKFLOW</p><h2 id="story-title">思路不断，<br /><span class="serif-accent">手也不必停。</span></h2><p>粘贴、处理、复制，把常用的小操作连起来。<br />每个工具分别保留输入与结果，来回切换也从容。</p><div class="shortcut-line"><span><kbd>⌘</kbd><kbd>K</kbd> 搜索工具</span><span><kbd>⌘</kbd><kbd>↵</kbd> 处理内容</span></div></div>
+  <div class="tool-index" aria-label="六种工具" data-reveal>{tools.map(([icon, title, description], index) => <div><span class="tool-index-number">0{index + 1}</span><Icon name={icon} size={23} /><h3>{title}</h3><p>{description}</p></div>)}</div>
+</section>}
+{slug === 'languageswitcher' && <section class="product-story language-story container" aria-labelledby="story-title">
+  <div class="language-poster" data-reveal aria-label="应用内置语言"><span class="poster-label">SAME APP. YOUR LANGUAGE.</span><div class="language-words"><span lang="zh-CN">你好。</span><span lang="en">Hello.</span><span lang="ja">こんにちは。</span></div><span class="poster-footer"><Icon name="globe" size={16} /> 熟悉的应用，换一种表达。</span></div>
+  <div class="story-copy" data-reveal><p class="eyebrow">A LANGUAGE THAT FEELS LIKE YOU</p><h2 id="story-title">习惯的语言，<br /><span class="serif-accent">这次就用它。</span></h2><p>阅读原文、对照教程，或体验不同语言的界面。一次选择，只影响这一次启动。</p><ul class="story-checks"><li><Icon name="check" size={17} /> 自动读取应用内置语言</li><li><Icon name="check" size={17} /> 按名称或语言代码搜索</li><li><Icon name="check" size={17} /> 保留系统与应用的默认设置</li></ul><p class="story-note">支持切换应用已有的语言，不额外添加翻译。</p></div>
+</section>}
+{slug === 'quietlock' && <section class="product-story quiet-story container" aria-labelledby="story-title">
+  <div class="story-copy" data-reveal><p class="eyebrow">ROOM FOR YOUR FOCUS</p><h2 id="story-title">让屏幕，<br /><span class="serif-accent">跟上你的节奏。</span></h2><p>读一篇长文，做一次演示，或专心完成眼前的工作。需要的息屏设置，就在菜单栏里。</p><p class="story-note">息屏时间与自动屏保可分别调整；系统锁定规则仍由 macOS 管理。</p></div>
+  <div class="quiet-poster" data-reveal><div class="quiet-poster-top"><Icon name="sun" size={20} /><span>给专注，多一点时间。</span></div><div class="quiet-time"><span>30</span><span>分钟<br /><small>闲置后息屏</small></span></div><div class="quiet-scale" aria-label="支持 1、5、10、15、30 分钟或永不"><div class="quiet-track"><span></span></div><div class="quiet-marks">{['1', '5', '10', '15', '30', '∞'].map((mark,index)=><span class:list={{active:index===4}}>{mark}</span>)}</div></div><div class="quiet-poster-bottom"><Icon name="sliders" size={17} /><span>六档选择 · 独立的自动屏保设置</span></div></div>
+</section>}

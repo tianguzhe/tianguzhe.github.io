@@ -5,17 +5,26 @@ import Icon from './Icon.astro';
 import OptimizedImage from './OptimizedImage.astro';
 interface Props { app: App; index: number }
 const { app, index } = Astro.props;
+const tags: Record<string, string[]> = {
+  devpocket: ['6 种常用工具', '键盘优先', '本机转换'],
+  macclean: ['开发缓存', '目录明细', '只读分析'],
+  languageswitcher: ['拖入即识别', '单次启动', '保留系统语言'],
+  quietlock: ['菜单栏常驻', '6 档息屏时间', '自动屏保'],
+};
 ---
-<article class={`app-card app-card-${app.slug}`} style={`--app-color:${app.color};--app-tint:${app.tint}`} data-reveal data-reveal-delay={index % 2 * 100} data-spotlight>
+<article class={`app-card app-card-${app.slug}`} style={`--app-color:${app.color};--app-tint:${app.tint}`} data-reveal>
   <div class="app-card-body">
-    <div class="card-topline"><span class="card-index">0{index + 1} / {app.category}</span><span class="platform-label"><Icon name="apple" size={13} /> macOS</span></div>
-    <div class="app-card-heading"><OptimizedImage src={app.icon} width="72" height="72" alt="" loading="lazy" /><div><h3><a href={`/${app.slug}/`}>{app.name}</a></h3><p>{app.tagline}</p></div></div>
+    <div class="card-topline"><span>0{index + 1}</span><span>{app.category}</span></div>
+    <OptimizedImage src={app.icon} width="64" height="64" alt="" loading="lazy" />
+    <h3><a href={`/${app.slug}/`}>{app.name}</a></h3>
+    <p class="card-tagline">{app.tagline}。</p>
     <p class="app-card-description">{app.description}</p>
-    <div class="card-links"><a class="text-link" href={`/${app.slug}/`}>了解应用 <Icon name="arrow" size={17} /></a><a class="card-download" href={download(app)} aria-label={`下载 ${app.name} 最新 DMG`}><Icon name="download" size={16} /> 下载</a></div>
+    <ul class="card-tags" aria-label="产品特点">{tags[app.slug].map(tag => <li>{tag}</li>)}</ul>
+    <div class="card-links"><a class="button primary" href={`/${app.slug}/`}>认识 {app.name} <Icon name="arrow" size={16} /></a><a class="card-download" href={download(app)} aria-label={`下载 ${app.name} 最新 DMG`}><Icon name="download" size={17} /><span>下载</span></a></div>
   </div>
   <a class="card-preview" href={`/${app.slug}/`} aria-label={`查看 ${app.name} 详情`}>
-    <span class="preview-caption"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>{app.name} for Mac</span><Icon name="diagonal" size={14} /></span>
-    <OptimizedImage sizes="(max-width: 720px) calc(100vw - 80px), (max-width: 1100px) calc(50vw - 100px), 480px" src={app.screenshot} alt={app.screenshotAlt} width={app.screenshotWidth} height={app.screenshotHeight} loading="lazy" />
-    <span class="preview-explore">探索 {app.name} <Icon name="arrow" size={16} /></span>
+    <span class="preview-caption"><span>{app.name.toUpperCase()} / FOR MAC</span><Icon name="diagonal" size={17} /></span>
+    <OptimizedImage sizes="(max-width: 720px) calc(100vw - 72px), (max-width: 1000px) 52vw, 640px" src={app.screenshot} alt={app.screenshotAlt} width={app.screenshotWidth} height={app.screenshotHeight} loading="lazy" />
+    <span class="preview-footnote"><span class="mini-dot"></span> {app.slug === 'quietlock' ? '浅色与深色，始终合拍' : '原生界面，为日常使用而做'}</span>
   </a>
 </article>

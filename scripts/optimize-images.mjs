@@ -14,7 +14,7 @@ for (const src of [...apps.map((app) => app.icon), ...screenshots]) {
   const source = join('public', src);
   const { width, height } = await sharp(source).metadata();
   const isIcon = src.endsWith('-icon.png');
-  const widths = isIcon ? [240] : [...new Set([480, 768, 1280].map((size) => Math.min(size, width)))];
+  const widths = isIcon ? [240] : [...new Set([480, 768, 1280, 1920].map((size) => Math.min(size, width)))];
   const variants = [];
   for (const size of widths) {
     const name = `${basename(src, '.png')}-${size}.webp`;

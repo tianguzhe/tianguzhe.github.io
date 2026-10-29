@@ -1,0 +1,36 @@
+:root { --ease-out: cubic-bezier(.2,.7,.2,1); }
+.site-header { transition: box-shadow .3s, background .3s; }
+.site-header.is-scrolled { box-shadow: 0 6px 28px #24402b08; background: #f8f8f2f5; }
+.button, .card-download, .text-link { transition: background .25s, color .25s, translate .25s var(--ease-out), box-shadow .25s; }
+.button svg, .text-link svg, .card-download svg, .more-apps-grid > a > svg { transition: translate .25s var(--ease-out); }
+.shelf-icon { transition: scale .3s var(--ease-out); }
+.shelf-icon img { transition: filter .3s; }
+.card-preview > img { transition: translate .5s var(--ease-out), scale .5s var(--ease-out); }
+.card-preview { transition: box-shadow .35s; }
+.faq-plus { transition: transform .25s; }
+@media (hover: hover) and (pointer: fine) {
+  .button:hover { translate: 0 -2px; box-shadow: 0 8px 19px #263f291b; }
+  .primary:hover { background: color-mix(in srgb, var(--app-color, var(--green)), black 10%); }
+  .button:hover svg:last-child, .text-link:hover svg, .more-apps-grid > a:hover > svg { translate: 3px 0; }
+  .shelf-app:hover .shelf-icon { scale: 1.07; }
+  .shelf-app:hover img { filter: drop-shadow(0 17px 10px #33472935); }
+  .card-preview:hover > img { translate: 0 -4px; scale: 1.015; }
+  .card-preview:hover { box-shadow: 0 17px 30px -20px #263c3b38; }
+}
+html[data-motion='on'] .hero-copy, html[data-motion='on'] .product-copy { animation: settle-in .65s var(--ease-out) backwards; }
+html[data-motion='on'] .shelf-icon { animation: shelf-float 7s ease-in-out var(--float-delay, 0s) infinite; }
+html[data-motion='on'] .shelf-star { animation: slow-turn 40s linear infinite; }
+html[data-motion='on'] .image-dialog[open] { animation: dialog-in .25s var(--ease-out); }
+html[data-motion='on'] .faq-list details[open] > p { animation: detail-in .25s var(--ease-out); }
+html[data-motion-paused='true'] *, html[data-motion-paused='true'] *::before, html[data-motion-paused='true'] *::after { animation-play-state: paused !important; }
+html[data-motion='off'] { scroll-behavior: auto; }
+html[data-motion='off'] *, html[data-motion='off'] *::before, html[data-motion='off'] *::after { animation: none !important; transition-duration: .01ms !important; }
+@keyframes settle-in { from { translate: 0 12px; } to { translate: 0; } }
+@keyframes shelf-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -5px; } }
+@keyframes slow-turn { to { rotate: 360deg; } }
+@keyframes dialog-in { from { opacity: 0; scale: .98; } to { opacity: 1; scale: 1; } }
+@keyframes detail-in { from { opacity: .6; translate: 0 -4px; } to { opacity: 1; translate: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  :root { scroll-behavior: auto; }
+}

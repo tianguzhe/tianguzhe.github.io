@@ -106,8 +106,8 @@ export const apps: App[] = [
     tagline: '息屏时间，随手掌控',
     headline: ['什么时候息屏，', '你说了算。'],
     description: '在菜单栏调整显示器休眠时间，切换自动屏保。阅读、演示或专注工作时，让屏幕按你的节奏休息。',
-    icon: '/images/quietlock-icon.png', screenshot: '/images/quietlock-preview.png',
-    screenshotWidth: 752, screenshotHeight: 500,
+    icon: '/images/quietlock-icon.png', screenshot: '/images/quietlock-preview-v2.png',
+    screenshotWidth: 752, screenshotHeight: 460,
     screenshotAlt: 'QuietLock 的浅色与深色菜单栏面板，包含息屏滑杆和自动屏保开关',
     caption: '一个菜单栏面板，照顾浅色与深色的每一种工作状态。',
     features: [
