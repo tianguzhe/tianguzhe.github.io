@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f6f5f0">
+  <meta name="description" content="一份淡雅的六个月日历，展示前一个月、当月和后四个月。以北京时间为准，结合中国法定节假日与大小周，给日子留一点空白。">
+  <title>日常 · 六个月日历</title>
+  <link rel="canonical" href="https://tianguzhe.github.io/today/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="日常 · 日日是好日">
+  <meta property="og:description" content="一眼看见六个月，让工作与休息都有自己的节奏。农历、法定假期、大小周，尽在日常。">
+  <meta property="og:url" content="https://tianguzhe.github.io/today/">
+  <meta property="og:image" content="https://tianguzhe.github.io/today/social.png">
+  <meta property="og:image:alt" content="日常日历：日日是好日，让日子按自己的节奏展开。">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css?v=20261030">
+</head>
+<body>
+  <main>
+    <header class="topbar">
+      <div class="brand"><span class="brand-seal" aria-hidden="true">日</span><div><div class="brand-name">日常</div><div class="brand-caption">ORDINARY DAYS</div></div></div>
+      <div class="top-actions">
+        <span class="today-label"><time id="beijing-clock"></time><span class="timezone-label">北京时间 · UTC+8</span></span>
+        <button class="settings-button" id="open-settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--paper)"/><circle cx="15" cy="17" r="2" fill="var(--paper)"/></svg>休息设置</button>
+      </div>
+    </header>
+    <section class="intro" aria-labelledby="page-title">
+      <div class="intro-copy"><p class="eyebrow"><span class="live-dot" aria-hidden="true"></span><span id="today-context">TODAY, AT YOUR OWN PACE.</span></p><h1 id="page-title">日日<span>是好日。</span></h1><p class="intro-caption">回望与期待之间，过好此刻。</p></div>
+      <div class="season-decoration" aria-hidden="true"><span class="season-orbit"></span><span class="season-character" id="season-character">秋</span><svg class="season-sprig" viewBox="0 0 55 73"><path d="M21 69c2-18 8-38 19-58M28 45C13 44 8 37 8 30c13 0 20 6 20 15Zm4-12C45 29 49 21 46 15c-9 2-15 10-14 18ZM23 59C11 55 7 48 8 42c11 2 16 8 15 17Z"/></svg></div>
+      <div class="overview" role="group" aria-label="当月工作与休息概览">
+        <div class="overview-stat"><div class="stat-number"><b id="current-rest">—</b><span class="stat-unit">天</span></div><span id="rest-stat-label">本月休息</span></div>
+        <div class="overview-stat secondary"><div class="stat-number"><b id="current-work">—</b><span class="stat-unit">天</span></div><span id="work-stat-label">本月工作</span></div>
+        <div class="next-rest"><div class="next-rest-heading"><svg class="rest-flower" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V10m0 7c-6 0-8-4-7-7 4 0 7 3 7 7Zm0-3c6 0 8-4 7-7-4 0-7 3-7 7Z"/></svg><span id="next-rest-label">下一次休息</span></div><strong id="next-rest-value">—</strong><span class="rest-countdown" id="rest-countdown"></span></div>
+      </div>
+    </section>
+    <div class="calendar-toolbar">
+      <div class="range-label"><span class="section-label">日历一览</span><span id="range-start"></span><span class="range-dash" aria-hidden="true"></span><span id="range-end"></span></div>
+      <div class="legend" aria-label="日历图例"><span class="legend-item"><i class="legend-dot holiday"></i>法定假期</span><span class="legend-item"><i class="legend-dot"></i>周休</span><span class="legend-item"><i class="legend-dot work"></i>调休上班</span><span class="legend-item"><i class="legend-dot today"></i>今天</span></div>
+    </div>
+    <div class="calendar-navigation"><nav class="month-navigation" id="month-navigation" aria-label="选择月份"></nav><button type="button" class="today-button" id="back-to-today" aria-label="回到今天" title="回到今天"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 2 8M4 4v6h6"/></svg>回到今天</button></div>
+    <section class="calendar-grid" id="calendar-grid" aria-label="前一个月、当月及后四个月的日历"></section>
+    <div class="under-calendar"><div class="schedule-summary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 4-5 8h6l-1 8 11-12h-7l1-4Z"/></svg><strong id="schedule-label">大小周 · 周日固定休息</strong></div><p id="anchor-summary" class="anchor-summary"></p></div>
+    <div class="page-note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-9v1"/></svg><p id="data-note"></p></div>
+    <footer class="page-footer"><span class="footer-flower"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V10m0 7c-6 0-8-4-7-7 4 0 7 3 7 7Zm0-3c6 0 8-4 7-7-4 0-7 3-7 7Z"/></svg>日常 · ORDINARY DAYS</span><span class="footer-phrase">四季轮换，日常如常。</span></footer>
+    <noscript>请启用浏览器的 JavaScript，以显示按北京时间计算的日历。</noscript>
+  </main>
+
+  <dialog class="settings-dialog" id="settings-dialog" aria-labelledby="settings-title">
+    <form id="settings-form">
+      <div class="dialog-header"><h2 id="settings-title">休息的节奏</h2><button class="close-button" type="button" data-close-dialog aria-label="关闭设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+      <div class="dialog-body">
+        <div class="field"><label for="schedule-mode">每周休息规则</label><select id="schedule-mode" name="mode"><option value="alternating">大小周 · 单双休交替</option><option value="single">单休 · 每周日休息</option><option value="double">双休 · 每周六、周日休息</option></select><p class="field-help">法定假期和调休上班日期，优先于每周休息规则。</p></div>
+        <div class="field" id="anchor-field"><label for="anchor-date">任选一个双休周的周六</label><input id="anchor-date" name="anchor" type="date" required min="1900-01-01" max="9999-12-31"><p class="field-help">从这个周六起，每隔 14 天休息一次；周日固定休息。<br>跨月、跨年连续轮换，法定假期不改变轮换顺序。</p><button type="button" class="switch-anchor" id="switch-anchor">切换到另一组大小周</button></div>
+        <div class="settings-note"><p>所有日期均按北京时间（Asia/Shanghai，UTC+8）计算。</p><p id="holiday-data-summary"></p><p id="holiday-data-sources" hidden></p><p id="storage-note">设置仅保存在当前浏览器中。</p></div>
+        <p class="form-error" id="settings-error" role="alert" hidden></p>
+      </div>
+      <div class="dialog-footer"><button type="button" class="reset-button" id="reset-settings">恢复默认设置</button><button type="submit" class="primary-button">保存设置</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="detail-dialog" id="detail-dialog" aria-labelledby="detail-title" aria-describedby="detail-relative">
+    <div class="dialog-header"><div><p class="detail-eyebrow">ONE DAY AT A TIME</p><h2 id="detail-title">日子的距离</h2></div><button class="close-button" type="button" data-close-dialog aria-label="关闭日期详情"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+    <div class="dialog-body">
+      <div class="detail-date-row"><p class="detail-date" id="detail-day"></p><div class="detail-date-copy"><p class="detail-date-line" id="detail-date-line"></p><p class="detail-weekday" id="detail-weekday"></p><div class="detail-status-row"><span class="detail-status" id="detail-status"></span><span class="detail-lunar" id="detail-lunar" hidden></span></div></div></div>
+      <div class="detail-distance">
+        <svg class="detail-distance-art" viewBox="0 0 91 119" aria-hidden="true"><path d="M70 13C37-2 8 20 13 49c3 20 21 34 42 31M47 116c1-24 9-54 24-76M52 89c-16-1-26-10-25-20 15 1 24 7 25 20Zm8-22c15-1 24-10 22-20-14 1-21 10-22 20ZM48 105c-14-3-23-11-22-20 14 2 22 9 22 20Z"/></svg>
+        <p class="detail-distance-caption" id="detail-distance-caption">距今天</p>
+        <p class="detail-relative" id="detail-relative"><span class="detail-relative-number" id="detail-relative-days"></span><span class="detail-relative-unit" id="detail-relative-unit"></span></p>
+        <div class="detail-workdays" id="detail-workdays" hidden><p class="detail-workdays-line"><span id="detail-workdays-prefix">有</span><strong id="detail-workdays-count"></strong><span>个工作日</span></p><p class="detail-count-note">从明天起，含所选当天</p></div>
+      </div>
+      <p class="detail-description" id="detail-description"></p><p class="detail-pending" id="detail-pending" hidden></p>
+    </div>
+    <div class="dialog-footer"><span class="detail-footer-phrase">把日子，慢慢过。</span><button type="button" class="primary-button" data-close-dialog>收好这一天</button></div>
+  </dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <!-- 所有字体和日历数据均为本地资源；保留目录结构即可离线打开。 -->
+  <script src="./holidays.js"></script>
+  <script src="./lunar.js"></script>
+  <script>
+    'use strict';
+    // Civil dates are represented as UTC midnight values only for arithmetic.
+    // The current civil date always comes from Asia/Shanghai, never the host's local timezone.
+    const TIME_ZONE = 'Asia/Shanghai';
+    const DAY_MS = 86400000;
+    const STORAGE_KEY = 'ordinary-days-settings-v1';
+    const DEFAULT_SETTINGS = Object.freeze({ mode: 'alternating', anchor: '2026-10-17' });
+    const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
+    const beijingDateFormat = new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE, year: 'numeric', month: '2-digit', day: '2-digit' });
+    const beijingClockFormat = new Intl.DateTimeFormat('zh-CN', { timeZone: TIME_ZONE, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+
+    const HOLIDAY_DATA = Object.create(null);
+    const STATUTORY_DATA = Object.create(null);
+    const holidaySources = [];
+    let holidayDataIssue = '';
+    const holidayDates = new Map();
+    const statutoryDates = new Map();
+    const workDates = new Map();
+    const pad = value => String(value).padStart(2, '0');
+    const $ = id => document.getElementById(id);
+
+    function civilDate(year, month, day) {
+      const date = new Date(0);
+      date.setUTCFullYear(year, month - 1, day);
+      date.setUTCHours(0, 0, 0, 0);
+      return date;
+    }
+
+    function dateKey(date) {
+      return `${String(date.getUTCFullYear()).padStart(4, '0')}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`;
+    }
+
+    function parseDate(key) {
+      if (typeof key !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(key)) return null;
+      const [year, month, day] = key.split('-').map(Number);
+      if (year < 1900 || year > 9999) return null;
+      const date = civilDate(year, month, day);
+      return dateKey(date) === key ? date : null;
+    }
+
+    function beijingToday(instant = new Date()) {
+      const parts = Object.fromEntries(beijingDateFormat.formatToParts(instant).map(part => [part.type, part.value]));
+      return civilDate(Number(parts.year), Number(parts.month), Number(parts.day));
+    }
+
+    function addDays(date, days) { return new Date(date.getTime() + days * DAY_MS); }
+    function monthLength(year, month) { return civilDate(year, month + 1, 0).getUTCDate(); }
+
+    function visibleMonths(today) {
+      return Array.from({ length: 6 }, (_, index) => {
+        const offset = index - 1;
+        const date = civilDate(today.getUTCFullYear(), today.getUTCMonth() + 1 + offset, 1);
+        return { year: date.getUTCFullYear(), month: date.getUTCMonth() + 1, offset };
+      });
+    }
+
+    function validSettings(value) {
+      if (!value || !['alternating', 'single', 'double'].includes(value.mode)) return false;
+      const anchor = parseDate(value.anchor);
+      return Boolean(anchor && anchor.getUTCDay() === 6);
+    }
+
+    let storageAvailable = true;
+    function readSettings() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (validSettings(saved)) return { mode: saved.mode, anchor: saved.anchor };
+      } catch (_) { storageAvailable = false; }
+      return { ...DEFAULT_SETTINGS };
+    }
+
+    let settings = readSettings();
+    let today = beijingToday();
+    let selectedMonth = dateKey(today).slice(0, 7);
+    let toastTimeout;
+
+    function loadHolidayData() {
+      try {
+        const dataset = window.CALENDAR_HOLIDAY_DATA;
+        if (!dataset || dataset.version !== 1 || !dataset.years || typeof dataset.years !== 'object' || Array.isArray(dataset.years)) {
+          throw new Error('请确认 holidays.js 与 HTML 放在同一目录，且数据格式正确。');
+        }
+        // Validate the entire file before using it, so an invalid update cannot apply partially.
+        const entries = Object.entries(dataset.years);
+        for (const [year, data] of entries) {
+          if (!/^\d{4}$/.test(year) || Number(year) < 1900 || !data || typeof data.confirmed !== 'boolean' || !Array.isArray(data.holidays) || !Array.isArray(data.workdays)) {
+            throw new Error(`${year} 年的 confirmed、holidays 或 workdays 格式不正确。`);
+          }
+          for (const holiday of data.holidays) {
+            const start = parseDate(holiday?.start);
+            const end = parseDate(holiday?.end);
+            if (!holiday || typeof holiday.name !== 'string' || !holiday.name.trim() || !start || !end || end < start || end - start > 366 * DAY_MS) {
+              throw new Error(`${year} 年有无效的假期名称或日期区间。`);
+            }
+          }
+          for (const workday of data.workdays) {
+            if (!workday || typeof workday.name !== 'string' || !workday.name.trim() || !parseDate(workday.date) || !data.confirmed) {
+              throw new Error(`${year} 年有无效的调休日期；仅法定当日的数据不应包含调休。`);
+            }
+          }
+          if (data.sources !== undefined && !Array.isArray(data.sources)) throw new Error(`${year} 年的 sources 应为数组。`);
+          for (const source of data.sources || []) {
+            if (!source || typeof source.label !== 'string' || !source.label.trim() || typeof source.url !== 'string' || !/^https?:\/\//.test(source.url)) {
+              throw new Error(`${year} 年的参考链接格式不正确。`);
+            }
+          }
+        }
+        for (const [year, data] of entries) {
+          if (data.confirmed) HOLIDAY_DATA[year] = data;
+          else STATUTORY_DATA[year] = data.holidays;
+          holidaySources.push(...(data.sources || []));
+        }
+      } catch (error) {
+        holidayDataIssue = `假期数据未加载：${error.message} 当前仅按周休规则估算。`;
+      }
+    }
+
+    loadHolidayData();
+    for (const data of Object.values(HOLIDAY_DATA)) {
+      for (const holiday of data.holidays) {
+        const end = parseDate(holiday.end);
+        for (let day = parseDate(holiday.start); day <= end; day = addDays(day, 1)) holidayDates.set(dateKey(day), holiday.name);
+      }
+      for (const workday of data.workdays) workDates.set(workday.date, workday.name);
+    }
+    for (const holidays of Object.values(STATUTORY_DATA)) {
+      for (const holiday of holidays) {
+        const end = parseDate(holiday.end);
+        for (let day = parseDate(holiday.start); day <= end; day = addDays(day, 1)) statutoryDates.set(dateKey(day), holiday.name);
+      }
+    }
+
+    function dayStatus(date, rule = settings) {
+      const key = dateKey(date);
+      if (workDates.has(key)) return { type: 'work', isRest: false, name: workDates.get(key), label: '调休上班' };
+      if (holidayDates.has(key)) return { type: 'holiday', isRest: true, name: holidayDates.get(key), label: '法定假期' };
+      if (statutoryDates.has(key)) return { type: 'holiday', isRest: true, name: statutoryDates.get(key), label: '法定当日', statutoryOnly: true };
+      const weekday = date.getUTCDay();
+      if (weekday === 0) return { type: 'rest', isRest: true, label: '周日休息' };
+      if (weekday === 6) {
+        if (rule.mode === 'double') return { type: 'rest', isRest: true, label: '周六休息' };
+        if (rule.mode === 'alternating') {
+          const daysFromAnchor = Math.round((date.getTime() - parseDate(rule.anchor).getTime()) / DAY_MS);
+          if (daysFromAnchor % 14 === 0) return { type: 'rest', isRest: true, label: '双休周 · 周六休息' };
+          return { type: 'normal', isRest: false, label: '单休周 · 周六上班' };
+        }
+        return { type: 'normal', isRest: false, label: '周六上班' };
+      }
+      return { type: 'normal', isRest: false, label: '正常上班' };
+    }
+
+    function monthStats(year, month) {
+      let rest = 0;
+      const total = monthLength(year, month);
+      for (let day = 1; day <= total; day++) if (dayStatus(civilDate(year, month, day)).isRest) rest++;
+      return { rest, work: total - rest, total };
+    }
+
+    function monthEvents(year, month) {
+      const data = HOLIDAY_DATA[year];
+      const prefix = `${year}-${pad(month)}`;
+      if (!data) {
+        const statutory = (STATUTORY_DATA[year] || []).filter(holiday => holiday.start.startsWith(prefix) || holiday.end.startsWith(prefix)).map(holiday => holiday.name);
+        return statutory.length ? statutory.join(' · ') + ' / 调休待更新' : '连休、调休待更新';
+      }
+      const names = data.holidays.filter(holiday => holiday.start.startsWith(prefix) || holiday.end.startsWith(prefix)).map(holiday => holiday.name);
+      const adjustments = data.workdays.filter(workday => workday.date.startsWith(prefix));
+      if (names.length) return names.join(' · ') + (adjustments.length ? ' / 调休' : '');
+      return adjustments.length ? '本月有调休上班' : '按周休规则';
+    }
+
+    function renderMonth({ year, month, offset }) {
+      const current = offset === 0;
+      const confirmed = Boolean(HOLIDAY_DATA[year]);
+      const stats = monthStats(year, month);
+      const firstDay = (civilDate(year, month, 1).getUTCDay() + 6) % 7;
+      const card = document.createElement('article');
+      card.className = `month-card${current ? ' current' : ''}${selectedMonth === `${year}-${pad(month)}` ? ' is-selected' : ''}`;
+      card.id = `calendar-${year}-${pad(month)}`;
+      card.dataset.month = `${year}-${pad(month)}`;
+      card.setAttribute('aria-label', `${year}年${month}月${current ? '，当月' : ''}${confirmed ? '' : '，假期安排待更新'}`);
+      const titleId = `month-${year}-${month}`;
+      card.setAttribute('aria-labelledby', titleId);
+      const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+      const monthEnglish = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+      card.innerHTML = `<div class="month-heading"><h2 class="month-title" id="${titleId}" aria-label="${year}年${month}月"><span class="month-number" aria-hidden="true">${pad(month)}</span><span class="month-title-copy"><span class="month-unit">${monthNames[month - 1]}</span><span class="month-english" aria-hidden="true">${monthEnglish[month - 1]}</span></span></h2><div class="month-meta"><span class="month-year">${year}</span><span class="month-status${current ? ' active' : !confirmed ? ' pending' : ''}">${current ? '当月' : !confirmed ? '待更新' : ''}</span></div></div><div class="weekdays" aria-hidden="true">${['一', '二', '三', '四', '五', '六', '日'].map(day => `<span>${day}</span>`).join('')}</div>`;
+      const days = document.createElement('div');
+      days.className = 'days';
+      days.setAttribute('role', 'group');
+      days.setAttribute('aria-label', `${year}年${month}月日期，周一为每周首日`);
+      for (let cell = 0; cell < 42; cell++) {
+        const day = cell - firstDay + 1;
+        if (day < 1 || day > stats.total) {
+          const empty = document.createElement('span');
+          empty.setAttribute('aria-hidden', 'true');
+          days.append(empty);
+          continue;
+        }
+        const date = civilDate(year, month, day);
+        const key = dateKey(date);
+        const status = dayStatus(date);
+        const isToday = key === dateKey(today);
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `day ${status.type}${isToday ? ' today' : ''}`;
+        button.dataset.date = key;
+        button.dataset.status = status.type;
+        button.setAttribute('aria-label', `${year}年${month}月${day}日，星期${WEEKDAYS[date.getUTCDay()]}，${status.name ? status.name + '，' : ''}${status.label}${isToday ? '，今天' : ''}${confirmed ? '' : status.statutoryOnly ? '，连休及调休安排待更新' : '，周休估算，调休安排待更新'}`);
+        if (isToday) button.setAttribute('aria-current', 'date');
+        button.title = button.getAttribute('aria-label');
+        const lunar = window.Lunar?.fromSolar(year, month, day);
+        button.innerHTML = `<span class="day-number">${day}</span><span class="day-lunar" aria-hidden="true">${isToday ? '今天' : lunar ? lunar.day === 1 ? lunar.monthName : lunar.dayName : ''}</span>${status.type === 'holiday' || status.type === 'work' ? `<span class="day-badge" aria-hidden="true">${status.type === 'holiday' ? '假' : '班'}</span>` : ''}`;
+        days.append(button);
+      }
+      card.append(days);
+      const footer = document.createElement('div');
+      footer.className = 'month-footer';
+      footer.innerHTML = `<span class="month-event">${monthEvents(year, month)}</span><span class="rest-count">${confirmed ? '休息' : '预计休息'} <b>${stats.rest}</b> 天</span>`;
+      card.append(footer);
+      return card;
+    }
+
+    function renderOverview() {
+      const stats = monthStats(today.getUTCFullYear(), today.getUTCMonth() + 1);
+      const confirmed = Boolean(HOLIDAY_DATA[today.getUTCFullYear()]);
+      $('current-rest').textContent = stats.rest;
+      $('current-work').textContent = stats.work;
+      const lunar = window.Lunar?.fromSolar(today.getUTCFullYear(), today.getUTCMonth() + 1, today.getUTCDate());
+      $('today-context').textContent = `${today.getUTCMonth() + 1} 月 ${today.getUTCDate()} 日 · 星期${WEEKDAYS[today.getUTCDay()]}${lunar ? ` · ${lunar.text}` : ''}`;
+      $('rest-stat-label').textContent = confirmed ? '本月休息' : '预计休息';
+      $('work-stat-label').textContent = confirmed ? '本月工作' : '预计工作';
+      $('schedule-label').textContent = { alternating: '大小周 · 周日固定休息', single: '每周单休 · 周日休息', double: '每周双休 · 周六、周日休息' }[settings.mode];
+      const anchor = parseDate(settings.anchor);
+      $('anchor-summary').textContent = settings.mode === 'alternating' ? `${anchor.getUTCFullYear()}.${pad(anchor.getUTCMonth() + 1)}.${pad(anchor.getUTCDate())} 为双休周六 · 法定安排优先` : '法定假期、调休上班优先 · 北京时间';
+      for (let offset = 0; offset < 15; offset++) {
+        const candidate = addDays(today, offset);
+        const status = dayStatus(candidate);
+        if (status.isRest) {
+          $('next-rest-label').textContent = offset === 0 ? '今天就可以歇一歇' : Boolean(HOLIDAY_DATA[candidate.getUTCFullYear()]) ? '下一次休息' : '下一次预计休息';
+          $('next-rest-value').textContent = `${pad(candidate.getUTCMonth() + 1)}.${pad(candidate.getUTCDate())} · ${status.name || '周' + WEEKDAYS[candidate.getUTCDay()]}`;
+          $('rest-countdown').textContent = offset === 0 ? '好好享受今天' : offset === 1 ? '明天，歇一歇' : `还有 ${offset} 天`;
+          break;
+        }
+      }
+    }
+
+    function render() {
+      const months = visibleMonths(today);
+      if (!months.some(({ year, month }) => `${year}-${pad(month)}` === selectedMonth)) selectedMonth = dateKey(today).slice(0, 7);
+      $('calendar-grid').replaceChildren(...months.map(renderMonth));
+      $('month-navigation').replaceChildren(...months.map(({ year, month, offset }) => {
+        const key = `${year}-${pad(month)}`;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'month-nav-button';
+        button.dataset.month = key;
+        button.setAttribute('aria-label', `查看${year}年${month}月${offset === 0 ? '，当月' : ''}`);
+        button.setAttribute('aria-controls', `calendar-${key}`);
+        button.setAttribute('aria-pressed', String(key === selectedMonth));
+        button.innerHTML = `${month} 月${offset === 0 ? '<span class="nav-current-dot" aria-hidden="true"></span>' : ''}`;
+        return button;
+      }));
+      $('range-start').textContent = `${months[0].year}.${pad(months[0].month)}`;
+      const lastMonth = months[months.length - 1];
+      $('range-end').textContent = `${lastMonth.year}.${pad(lastMonth.month)}`;
+      const pendingYears = [...new Set(months.filter(month => !HOLIDAY_DATA[month.year]).map(month => month.year))];
+      const pendingNote = pendingYears.map(year => STATUTORY_DATA[year] ? `${year} 年已标注法定当日，连休及调休安排待更新。` : `${year} 年假期安排尚未加载，仅按周休估算。`).join('');
+      $('data-note').textContent = holidayDataIssue || `法定假期、调休上班优先于周休规则；点击日期可查看具体安排。${pendingNote || '所示年份已按完整放假及调休安排标注。'}`;
+      const confirmedYears = Object.keys(HOLIDAY_DATA).sort();
+      const statutoryYears = Object.keys(STATUTORY_DATA).sort();
+      const summaries = [];
+      if (confirmedYears.length) summaries.push(`${confirmedYears.join('、')} 年已加载完整放假及调休安排。`);
+      if (statutoryYears.length) summaries.push(`${statutoryYears.join('、')} 年仅标注法定当日，连休及调休安排待更新。`);
+      $('holiday-data-summary').textContent = holidayDataIssue || summaries.join('') || '尚无假期数据，当前仅按周休规则估算。';
+      const sources = $('holiday-data-sources');
+      sources.replaceChildren();
+      const linkedUrls = new Set();
+      for (const source of holidaySources) {
+        if (linkedUrls.has(source.url)) continue;
+        linkedUrls.add(source.url);
+        if (sources.childNodes.length) sources.append(document.createTextNode(' · '));
+        const link = document.createElement('a');
+        link.textContent = source.label;
+        link.href = source.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        sources.append(link);
+      }
+      sources.hidden = !linkedUrls.size;
+      $('season-character').textContent = ['冬', '春', '夏', '秋'][Math.floor((today.getUTCMonth() + 1) % 12 / 3)];
+      renderOverview();
+    }
+
+    function updateClock() {
+      const instant = new Date();
+      const nextToday = beijingToday(instant);
+      $('beijing-clock').textContent = beijingClockFormat.format(instant).replaceAll('/', '.');
+      $('beijing-clock').dateTime = instant.toISOString();
+      if (dateKey(nextToday) !== dateKey(today)) {
+        today = nextToday;
+        selectedMonth = dateKey(today).slice(0, 7);
+        render();
+        if ($('detail-dialog').open) $('detail-dialog').close();
+      }
+    }
+
+    function showToast(message) {
+      clearTimeout(toastTimeout);
+      $('toast').textContent = message;
+      $('toast').hidden = false;
+      toastTimeout = setTimeout(() => { $('toast').hidden = true; }, 3000);
+    }
+
+    function syncAnchorField() {
+      const alternating = $('schedule-mode').value === 'alternating';
+      $('anchor-field').hidden = !alternating;
+      $('anchor-date').disabled = !alternating;
+      $('settings-error').hidden = true;
+    }
+
+    function openSettings() {
+      $('schedule-mode').value = settings.mode;
+      $('anchor-date').value = settings.anchor;
+      $('storage-note').textContent = storageAvailable ? '设置仅保存在当前浏览器中。' : '当前浏览器限制了本地保存，设置仍可在本次打开时使用。';
+      syncAnchorField();
+      $('settings-dialog').showModal();
+    }
+
+    function dateDistance(date, base = today, rule = settings) {
+      const days = Math.round((date.getTime() - base.getTime()) / DAY_MS);
+      let workdays = 0;
+      let estimated = false;
+      // Exclude today and include the selected date; count using the same calendar rules.
+      for (let offset = 1; offset <= days; offset++) {
+        const candidate = addDays(base, offset);
+        if (!dayStatus(candidate, rule).isRest) workdays++;
+        if (!HOLIDAY_DATA[candidate.getUTCFullYear()]) estimated = true;
+      }
+      return { days, workdays, estimated };
+    }
+
+    function openDay(key) {
+      updateClock();
+      const date = parseDate(key);
+      if (!date) return;
+      const status = dayStatus(date);
+      const distance = dateDistance(date);
+      const relation = distance.days < 0 ? 'past' : distance.days > 0 ? 'future' : 'today';
+      $('detail-dialog').className = `detail-dialog is-${relation}`;
+      $('detail-title').textContent = relation === 'today' ? '今天，慢慢来' : '日子的距离';
+      $('detail-day').textContent = pad(date.getUTCDate());
+      $('detail-date-line').textContent = `${date.getUTCFullYear()} 年 ${date.getUTCMonth() + 1} 月 ${date.getUTCDate()} 日`;
+      $('detail-weekday').textContent = `星期${WEEKDAYS[date.getUTCDay()]} · 北京时间`;
+      $('detail-status').className = `detail-status ${status.type}`;
+      $('detail-status').textContent = status.name ? `${status.name} · ${status.label}` : status.label;
+      const lunar = window.Lunar?.fromSolar(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
+      $('detail-lunar').hidden = !lunar;
+      $('detail-lunar').textContent = lunar?.text || '';
+      $('detail-distance-caption').textContent = relation === 'today' ? '这一刻' : '距今天';
+      $('detail-relative-days').hidden = relation === 'today';
+      $('detail-relative-days').textContent = Math.abs(distance.days);
+      $('detail-relative-unit').textContent = relation === 'past' ? '天之前' : relation === 'future' ? '天之后' : '就在今天';
+      $('detail-workdays').hidden = relation !== 'future';
+      $('detail-workdays-prefix').textContent = distance.estimated ? '预计有' : '有';
+      $('detail-workdays-count').textContent = distance.workdays;
+      $('detail-description').textContent = status.statutoryOnly ? '依据《全国年节及纪念日放假办法》，这一天属于全体公民放假的法定节日。具体连休与调休安排待更新。' : status.type === 'holiday' ? '国务院放假安排中的休息日。给自己一点时间，出门走走，或安静地待着。' : status.type === 'work' ? `根据国务院${status.name}放假安排，这一天需要调休上班，优先于大小周的休息规则。` : status.isRest ? '按你设定的每周休息规则，这一天可以休息。把时间留给想做的小事。' : '按你设定的每周休息规则，这一天上班。忙碌之间，也记得照顾自己。';
+      const pending = !HOLIDAY_DATA[date.getUTCFullYear()] || distance.estimated;
+      $('detail-pending').hidden = !pending;
+      $('detail-pending').textContent = holidayDataIssue || (distance.estimated ? '这段时间包含尚未更新完整假期安排的年份，工作日数量为估算；以正式放假、调休通知为准。' : STATUTORY_DATA[date.getUTCFullYear()] ? `${date.getUTCFullYear()} 年的法定当日已标注，连休及调休安排尚未加载；其余工作、休息日期为周休估算，请以正式通知为准。` : `${date.getUTCFullYear()} 年的法定假期及调休安排尚未加载，本日安排仅根据周休规则估算，请以正式通知为准。`);
+      $('detail-dialog').showModal();
+    }
+
+    function selectMonth(key, focusToday = false) {
+      selectedMonth = key;
+      document.querySelectorAll('.month-card').forEach(card => card.classList.toggle('is-selected', card.dataset.month === key));
+      document.querySelectorAll('.month-nav-button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.month === key)));
+      const card = document.getElementById(`calendar-${key}`);
+      card?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'nearest' });
+      if (focusToday) card?.querySelector('[aria-current="date"]')?.focus({ preventScroll: true });
+    }
+
+    $('month-navigation').addEventListener('click', event => {
+      const button = event.target.closest('button[data-month]');
+      if (button) selectMonth(button.dataset.month);
+    });
+    $('back-to-today').addEventListener('click', () => {
+      updateClock();
+      selectMonth(dateKey(today).slice(0, 7), true);
+    });
+    $('open-settings').addEventListener('click', openSettings);
+    $('schedule-mode').addEventListener('change', syncAnchorField);
+    $('anchor-date').addEventListener('input', () => { $('settings-error').hidden = true; });
+    $('switch-anchor').addEventListener('click', () => {
+      const date = parseDate($('anchor-date').value);
+      if (!date || date.getUTCDay() !== 6) {
+        $('settings-error').textContent = '请先选择一个周六，再切换大小周。';
+        $('settings-error').hidden = false;
+        return;
+      }
+      const switched = addDays(date, 7);
+      if (switched.getUTCFullYear() > 9999) return;
+      $('anchor-date').value = dateKey(switched);
+      $('settings-error').hidden = true;
+    });
+    $('reset-settings').addEventListener('click', () => {
+      $('schedule-mode').value = DEFAULT_SETTINGS.mode;
+      $('anchor-date').value = DEFAULT_SETTINGS.anchor;
+      syncAnchorField();
+    });
+    $('settings-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const candidate = { mode: $('schedule-mode').value, anchor: $('schedule-mode').value === 'alternating' ? $('anchor-date').value : settings.anchor };
+      if (!validSettings(candidate)) {
+        $('settings-error').textContent = '起算日期需要是周六，请重新选择。';
+        $('settings-error').hidden = false;
+        $('anchor-date').focus();
+        return;
+      }
+      settings = candidate;
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(settings)); storageAvailable = true; }
+      catch (_) { storageAvailable = false; }
+      render();
+      $('settings-dialog').close();
+      showToast(storageAvailable ? '已保存，日历按新的节奏更新。' : '日历已更新；浏览器限制保存，设置仅在本次生效。');
+    });
+    $('calendar-grid').addEventListener('click', event => {
+      const button = event.target.closest('button[data-date]');
+      if (button) openDay(button.dataset.date);
+    });
+    document.querySelectorAll('[data-close-dialog]').forEach(button => {
+      button.addEventListener('click', () => button.closest('dialog').close());
+    });
+    document.querySelectorAll('dialog').forEach(dialog => {
+      dialog.addEventListener('click', event => {
+        if (event.target !== dialog) return;
+        const rect = dialog.getBoundingClientRect();
+        if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
+      });
+    });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) updateClock(); });
+    render();
+    updateClock();
+    setInterval(updateClock, 10000);
+  </script>
+</body>
+</html>

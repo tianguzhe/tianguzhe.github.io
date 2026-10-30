@@ -14,7 +14,7 @@ function walk(path) {
   }
 }
 walk(root);
-assert.equal(htmlFiles.length, 6, 'Expected homepage, four product pages and 404');
+assert.equal(htmlFiles.length, 7, 'Expected homepage, four product pages, today calendar and 404');
 const titles = new Set();
 const errors = [];
 let references = 0;
@@ -48,7 +48,8 @@ for (const file of htmlFiles) {
     const value = match[1].replaceAll('&amp;', '&');
     if (/^(https?:|mailto:|data:)/.test(value)) continue;
     references++;
-    const [path, fragment] = value.split('#');
+    const [pathWithQuery, fragment] = value.split('#');
+    const path = pathWithQuery.split('?')[0];
     let target = path ? (path.startsWith('/') ? join(root, path) : resolve(dirname(file), path)) : file;
     if (target.endsWith('/')) target = join(target, 'index.html');
     if (!existsSync(target)) { errors.push(`${file}: missing ${value}`); continue; }
@@ -68,7 +69,9 @@ for (const [index, slug] of slugs.entries()) {
   assert.ok(html.includes('Apple 公证'), `Missing installation information: ${slug}`);
 }
 assert.match(readFileSync(join(root, '404.html'), 'utf8'), /name="robots" content="noindex"/);
-assert.equal((readFileSync(join(root, 'sitemap.xml'), 'utf8').match(/<url>/g) || []).length, 5);
+assert.equal((readFileSync(join(root, 'sitemap.xml'), 'utf8').match(/<url>/g) || []).length, 6);
 assert.ok(existsSync(join(root, 'robots.txt')));
+assert.ok(readFileSync(join(root, 'sitemap.xml'), 'utf8').includes('https://tianguzhe.github.io/today/'));
+assert.ok(existsSync(join(root, 'today', 'index.html')));
 assert.deepEqual(errors, [], 'Broken internal links or assets');
 console.log(`Verified ${htmlFiles.length} pages, ${references} local references, metadata, downloads and structured data.`);
