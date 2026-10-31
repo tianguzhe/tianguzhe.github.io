@@ -27,7 +27,7 @@ const tools = [
     <div class="process-trace" data-reveal aria-label="示例：从端口 3000 追溯到 node 服务"><div class="trace-top"><Icon name="network" size={22} /><span>LISTENING ON YOUR MAC</span><i></i></div><strong class="trace-port">:3000</strong><span class="trace-protocol">TCP · 127.0.0.1 · 仅本机</span><div class="trace-step"><span>01 / PROCESS</span><strong>node <small>PID 3184</small></strong></div><div class="trace-step"><span>02 / COMMAND</span><code>node server.js --port 3000</code></div><div class="trace-step"><span>03 / WORKSPACE</span><code>~/Projects/workspace</code></div><p>一条线索，继续追溯。<small>示例数据</small></p></div>
   </section>
   <section class="process-extra container" aria-label="端口视图与安装界面">
-    <figure data-reveal><OptimizedImage src="/images/procscope-ports.png" width="2480" height="1620" alt="ProcScope 端口视图，选中本地 3000 端口并查看 node 的启动命令与工作目录，示例数据" sizes="(max-width: 720px) 90vw, 720px" loading="lazy" /><figcaption>从监听地址，到进程的启动现场。</figcaption></figure>
+    <figure data-reveal><OptimizedImage src="/images/procscope-ports.png" width="2480" height="1620" alt="ProcScope 0.2.0 端口视图，收藏并命名网站前端，保留停止服务的收藏，查看 node 启动命令与工作目录，示例数据" sizes="(max-width: 720px) 90vw, 720px" loading="lazy" /><figcaption>收藏常用服务，从端口追溯到启动现场。</figcaption></figure>
     <figure class="installer-preview" data-reveal><OptimizedImage src="/images/procscope-installer.png" width="1360" height="1040" alt="ProcScope DMG 安装窗口，将左侧应用图标拖入右侧 Applications 文件夹即可安装" sizes="(max-width: 720px) 90vw, 500px" loading="lazy" /><figcaption>打开安装包，拖入应用程序。</figcaption></figure>
   </section>
 </>}
