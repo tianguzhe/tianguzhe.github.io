@@ -4,7 +4,7 @@ import '../styles/motion.css';
 import '../styles/macclean.css';
 import Icon from '../components/Icon.astro';
 interface Props { title: string; description: string; image?: string; imageAlt?: string; noindex?: boolean }
-const { title, description, image = '/images/social.png', imageAlt = 'tian 的四款原生 Mac 应用：DevPocket、MacClean、LanguageSwitcher 与 QuietLock', noindex = false } = Astro.props;
+const { title, description, image = '/images/social.png', imageAlt = 'tian 的五款原生 Mac 应用：DevPocket、MacClean、LanguageSwitcher、QuietLock 与 ProcScope', noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const socialImage = new URL(image, Astro.site);
 ---

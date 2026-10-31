@@ -6,7 +6,7 @@ import { apps } from '../src/data/apps.ts';
 const output = 'public/images/optimized';
 await mkdir(output, { recursive: true });
 await mkdir('src/generated', { recursive: true });
-const screenshots = [...apps.map((app) => app.screenshot), '/images/macclean-detail-v2.png'];
+const screenshots = [...apps.map((app) => app.screenshot), '/images/macclean-detail-v2.png', '/images/procscope-ports.png', '/images/procscope-installer.png'];
 const manifest = {};
 let sourceBytes = 0;
 let compactBytes = 0;

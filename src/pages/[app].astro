@@ -10,7 +10,7 @@ const { app } = Astro.props;
 const others = apps.filter((other) => other.slug !== app.slug);
 const schema = {
   '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: app.name,
-  applicationCategory: app.slug === 'devpocket' ? 'DeveloperApplication' : 'UtilitiesApplication',
+  applicationCategory: ['devpocket', 'procscope'].includes(app.slug) ? 'DeveloperApplication' : 'UtilitiesApplication',
   operatingSystem: 'macOS 14+', description: app.description,
   url: new URL(`/${app.slug}/`, Astro.site).href,
   image: new URL(app.screenshot, Astro.site).href,

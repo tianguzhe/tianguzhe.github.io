@@ -5,18 +5,18 @@ import OptimizedImage from '../components/OptimizedImage.astro';
 import AppCard from '../components/AppCard.astro';
 import { apps } from '../data/apps';
 ---
-<Layout title="tian · 为 Mac 打造轻巧、实用的原生工具" description="发现 tian 制作的四款原生 Mac 应用：DevPocket 开发工具箱、MacClean 磁盘分析、LanguageSwitcher 应用语言切换、QuietLock 息屏与屏保控制。">
+<Layout title="tian · 为 Mac 打造轻巧、实用的原生工具" description="发现 tian 制作的五款原生 Mac 应用：DevPocket 开发工具箱、MacClean 磁盘分析、LanguageSwitcher 应用语言切换、QuietLock 息屏与屏保控制、ProcScope 进程与端口观察。">
   <main id="main" tabindex="-1">
     <section class="studio-hero container">
       <div class="hero-copy">
         <p class="eyebrow"><span class="status-dot"></span> AN INDEPENDENT MAC APP STUDIO</p>
         <h1>小工具，<br />也值得<span class="serif-accent">用心。</span></h1>
         <p class="hero-description">为开发时的灵感，工作时的专注，<br />和每一个想让 Mac 更顺手的瞬间。</p>
-        <div class="hero-actions"><a href="#apps" class="button primary">探索四款应用 <Icon name="arrow" size={18} /></a><a href="#about" class="text-link">认识开发者 <Icon name="diagonal" size={16} /></a></div>
+        <div class="hero-actions"><a href="#apps" class="button primary">探索 {apps.length} 款应用 <Icon name="arrow" size={18} /></a><a href="#about" class="text-link">认识开发者 <Icon name="diagonal" size={16} /></a></div>
         <p class="hero-footnote"><Icon name="apple" size={16} /> 为 macOS 而生 <span>·</span> 由 tian 独立制作</p>
       </div>
-      <div class="studio-shelf" aria-label="四款原生 Mac 应用">
-        <div class="shelf-topline"><span>THE EVERYDAY COLLECTION</span><span>01 — 04</span></div>
+      <div class="studio-shelf" aria-label="五款原生 Mac 应用">
+        <div class="shelf-topline"><span>THE EVERYDAY COLLECTION</span><span>01 — {String(apps.length).padStart(2, '0')}</span></div>
         <div class="shelf-grid">
           {apps.map((app, index) => <a class={`shelf-app shelf-${index}`} href={`/${app.slug}/`} style={`--float-delay:${index * -1.6}s`}><span class="shelf-icon"><OptimizedImage src={app.icon} width="120" height="120" alt="" fetchpriority={index === 0 ? 'high' : 'auto'} /></span><strong>{app.name}</strong><span>{app.category}</span></a>)}
         </div>
@@ -27,7 +27,7 @@ import { apps } from '../data/apps';
     <div class="principles-strip container"><span><Icon name="command" size={18} /> 原生 macOS 体验</span><span><Icon name="shield" size={18} /> 数据在本机处理</span><span><Icon name="code" size={18} /> 源码公开可见</span><span><Icon name="apple" size={18} /> Apple Silicon & Intel</span></div>
 
     <section id="apps" class="apps-section container">
-      <div class="section-heading" data-reveal><div><p class="eyebrow">01 / SELECTED APPS</p><h2>四件小事，<br /><span class="serif-accent">认真做好。</span></h2></div><p class="section-aside">从一个具体的需要出发，<br />给每天的使用，多一点顺手。</p></div>
+      <div class="section-heading" data-reveal><div><p class="eyebrow">01 / SELECTED APPS</p><h2>把日常小事，<br /><span class="serif-accent">认真做好。</span></h2></div><p class="section-aside">从一个具体的需要出发，<br />给每天的使用，多一点顺手。</p></div>
       <div class="apps-grid">{apps.map((app, index) => <AppCard app={app} index={index} />)}</div>
     </section>
 

@@ -127,6 +127,34 @@ export const apps: App[] = [
       { question: '如何确保息屏后需要密码？', answer: '在“系统设置 → 锁定屏幕”中，将屏幕保护程序启动或显示器关闭后要求输入密码设为“立即”。QuietLock 控制息屏时机，系统设置决定是否需要密码。' },
     ],
   },
+  {
+    slug: 'procscope', name: 'ProcScope', category: '进程与端口',
+    color: '#16766c', tint: '#edf4ef',
+    tagline: '看清每一个运行中的任务',
+    headline: ['谁在运行，', '一眼看清。'],
+    description: '从应用资源到监听端口，从启动命令到父子进程。把 Mac 正在做的事，看得更清楚，管理得更从容。',
+    icon: '/images/procscope-icon.png', screenshot: '/images/procscope-preview.png',
+    screenshotWidth: 2480, screenshotHeight: 1620,
+    screenshotAlt: 'ProcScope 应用视图，石墨绿侧栏、应用 CPU 与内存列表，以及 Terminal 的进程详情',
+    caption: '应用、进程、端口，三个视角观察这台 Mac。图中为示例数据。',
+    features: [
+      { icon: 'activity', title: '资源占用，看清归属', text: '汇总应用与关联进程的 CPU 和内存，按名称、PID 或路径搜索。区分前台、后台与暂停状态。' },
+      { icon: 'network', title: '从端口，找到进程', text: '搜索一个端口号，查看 TCP 监听与 UDP 绑定，继续追溯所属进程、启动命令和工作目录。' },
+      { icon: 'shield', title: '每一步，都有依据', text: '查看父子进程关系，确认后再退出、结束、暂停或恢复。操作前重新验证身份，保护系统与其他用户进程。' },
+    ],
+    steps: [
+      { title: '选一个观察视角', text: '用 ⌘1–⌘3 切换应用、全部进程与监听端口。' },
+      { title: '找到需要的任务', text: '按 ⌘F 搜索名称、PID 或端口号，查看详情与来源。' },
+      { title: '了解清楚，再操作', text: '切换到应用，或核对目标与操作提示后再执行管理。' },
+    ],
+    faqs: [
+      { question: '会上传进程或命令信息吗？', answer: '不会。系统采样、筛选和关联都在本机完成，不需要账号，也没有网络上传。基本功能无需辅助功能、屏幕录制或完全磁盘访问权限。' },
+      { question: '为什么 CPU 可能超过 100%，内存合计偏大？', answer: 'CPU 采用单个核心为 100% 的进程口径，多核合计可以超过 100%。内存为 RSS 驻留内存，共享页面可能被不同进程重复统计，不等于整机实际已用内存。' },
+      { question: '“等待中”是不是应用卡住了？', answer: '不是。等待事件或资源是正常进程状态，不表示无响应。ProcScope 会明确区分等待、后台与暂停，目前不检测应用窗口是否无响应。' },
+      { question: '能结束所有进程，或释放所有端口吗？', answer: '不能。操作只针对当前用户的所选 PID，不递归结束子进程；系统进程、其他用户进程和 ProcScope 自身为只读。受保护进程的详情或端口可能不可见。' },
+      { question: '暂停进程会释放内存和端口吗？', answer: '不会。暂停只停止调度，内存和端口仍被占用。强制结束可能丢失未保存内容；服务也可能被系统自动重启，执行前请核对确认面板。' },
+    ],
+  },
 ];
 
 export const repository = (app: App) => `https://github.com/tianguzhe/${app.name}`;

@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import OptimizedImage from './OptimizedImage.astro';
 const { slug } = Astro.props;
 const tools = [
   ['braces', 'JSON', '整理结构，读懂数据'], ['refresh', '时间戳', '时间与日期，双向转换'],
@@ -19,3 +20,14 @@ const tools = [
   <div class="story-copy" data-reveal><p class="eyebrow">ROOM FOR YOUR FOCUS</p><h2 id="story-title">让屏幕，<br /><span class="serif-accent">跟上你的节奏。</span></h2><p>读一篇长文，做一次演示，或专心完成眼前的工作。需要的息屏设置，就在菜单栏里。</p><p class="story-note">息屏时间与自动屏保可分别调整；系统锁定规则仍由 macOS 管理。</p></div>
   <div class="quiet-poster" data-reveal><div class="quiet-poster-top"><Icon name="sun" size={20} /><span>给专注，多一点时间。</span></div><div class="quiet-time"><span>30</span><span>分钟<br /><small>闲置后息屏</small></span></div><div class="quiet-scale" aria-label="支持 1、5、10、15、30 分钟或永不"><div class="quiet-track"><span></span></div><div class="quiet-marks">{['1', '5', '10', '15', '30', '∞'].map((mark,index)=><span class:list={{active:index===4}}>{mark}</span>)}</div></div><div class="quiet-poster-bottom"><Icon name="sliders" size={17} /><span>六档选择 · 独立的自动屏保设置</span></div></div>
 </section>}
+
+{slug === 'procscope' && <>
+  <section class="product-story process-story container" aria-labelledby="story-title">
+    <div class="story-copy" data-reveal><p class="eyebrow">FOLLOW THE PROCESS</p><h2 id="story-title">一个端口，<br /><span class="serif-accent">找到它的来处。</span></h2><p>开发服务启动失败，提示端口已被占用。输入端口号，就能沿着进程、命令和目录，找到问题的线索。</p><div class="shortcut-line"><span><kbd>⌘</kbd><kbd>3</kbd> 查看端口</span><span><kbd>⌘</kbd><kbd>F</kbd> 快速搜索</span></div><p class="story-note">只显示当前权限可见的 TCP 监听与 UDP 绑定。</p></div>
+    <div class="process-trace" data-reveal aria-label="示例：从端口 3000 追溯到 node 服务"><div class="trace-top"><Icon name="network" size={22} /><span>LISTENING ON YOUR MAC</span><i></i></div><strong class="trace-port">:3000</strong><span class="trace-protocol">TCP · 127.0.0.1 · 仅本机</span><div class="trace-step"><span>01 / PROCESS</span><strong>node <small>PID 3184</small></strong></div><div class="trace-step"><span>02 / COMMAND</span><code>node server.js --port 3000</code></div><div class="trace-step"><span>03 / WORKSPACE</span><code>~/Projects/workspace</code></div><p>一条线索，继续追溯。<small>示例数据</small></p></div>
+  </section>
+  <section class="process-extra container" aria-label="端口视图与安装界面">
+    <figure data-reveal><OptimizedImage src="/images/procscope-ports.png" width="2480" height="1620" alt="ProcScope 端口视图，选中本地 3000 端口并查看 node 的启动命令与工作目录，示例数据" sizes="(max-width: 720px) 90vw, 720px" loading="lazy" /><figcaption>从监听地址，到进程的启动现场。</figcaption></figure>
+    <figure class="installer-preview" data-reveal><OptimizedImage src="/images/procscope-installer.png" width="1360" height="1040" alt="ProcScope DMG 安装窗口，将左侧应用图标拖入右侧 Applications 文件夹即可安装" sizes="(max-width: 720px) 90vw, 500px" loading="lazy" /><figcaption>打开安装包，拖入应用程序。</figcaption></figure>
+  </section>
+</>}

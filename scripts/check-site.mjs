@@ -3,8 +3,8 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 
 const root = resolve('dist');
-const slugs = ['devpocket', 'macclean', 'languageswitcher', 'quietlock'];
-const appNames = ['DevPocket', 'MacClean', 'LanguageSwitcher', 'QuietLock'];
+const slugs = ['devpocket', 'macclean', 'languageswitcher', 'quietlock', 'procscope'];
+const appNames = ['DevPocket', 'MacClean', 'LanguageSwitcher', 'QuietLock', 'ProcScope'];
 const htmlFiles = [];
 function walk(path) {
   for (const entry of readdirSync(path, { withFileTypes: true })) {
@@ -14,7 +14,7 @@ function walk(path) {
   }
 }
 walk(root);
-assert.equal(htmlFiles.length, 7, 'Expected homepage, four product pages, today calendar and 404');
+assert.equal(htmlFiles.length, slugs.length + 3, 'Expected homepage, product pages, today calendar and 404');
 const titles = new Set();
 const errors = [];
 let references = 0;
@@ -69,7 +69,7 @@ for (const [index, slug] of slugs.entries()) {
   assert.ok(html.includes('Apple 公证'), `Missing installation information: ${slug}`);
 }
 assert.match(readFileSync(join(root, '404.html'), 'utf8'), /name="robots" content="noindex"/);
-assert.equal((readFileSync(join(root, 'sitemap.xml'), 'utf8').match(/<url>/g) || []).length, 6);
+assert.equal((readFileSync(join(root, 'sitemap.xml'), 'utf8').match(/<url>/g) || []).length, slugs.length + 2);
 assert.ok(existsSync(join(root, 'robots.txt')));
 assert.ok(readFileSync(join(root, 'sitemap.xml'), 'utf8').includes('https://tianguzhe.github.io/today/'));
 assert.ok(existsSync(join(root, 'today', 'index.html')));
