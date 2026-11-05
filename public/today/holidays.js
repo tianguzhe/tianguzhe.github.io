@@ -39,23 +39,26 @@ window.CALENDAR_HOLIDAY_DATA = {
       ]
     },
     2027: {
-      confirmed: false,
-      // 仅为《全国年节及纪念日放假办法》（2024 年修订）的 13 个法定当日。
-      // 公历节日日期参考香港政府 2027 年日历；不采用香港放假政策。
-      // 不根据上一年安排推测未公布的连休或调休日期。
+      confirmed: true,
+      // 国务院办公厅关于2027年部分节假日安排的通知，2026-11-05。
       holidays: [
-        { name: '元旦', start: '2027-01-01', end: '2027-01-01' },
-        { name: '春节', start: '2027-02-05', end: '2027-02-08' },
-        { name: '清明节', start: '2027-04-05', end: '2027-04-05' },
-        { name: '劳动节', start: '2027-05-01', end: '2027-05-02' },
+        { name: '元旦', start: '2027-01-01', end: '2027-01-03' },
+        { name: '春节', start: '2027-02-05', end: '2027-02-13' },
+        { name: '清明节', start: '2027-04-03', end: '2027-04-05' },
+        { name: '劳动节', start: '2027-05-01', end: '2027-05-05' },
         { name: '端午节', start: '2027-06-09', end: '2027-06-09' },
         { name: '中秋节', start: '2027-09-15', end: '2027-09-15' },
-        { name: '国庆节', start: '2027-10-01', end: '2027-10-03' }
+        { name: '国庆节', start: '2027-10-01', end: '2027-10-07' }
       ],
-      workdays: [],
+      workdays: [
+        { date: '2027-01-31', name: '春节' },
+        { date: '2027-02-14', name: '春节' },
+        { date: '2027-05-08', name: '劳动节' },
+        { date: '2027-09-26', name: '国庆节' },
+        { date: '2027-10-09', name: '国庆节' }
+      ],
       sources: [
-        { label: '法定假期规定', url: 'https://www.mohrss.gov.cn/xxgk2020/fdzdgknr/zcfg/fg/202011/t20201103_394937.html' },
-        { label: '2027 年节日日期参考', url: 'https://www.gov.hk/tc/about/abouthk/holiday/2027.htm' }
+        { label: '2027 年放假通知（新华社）', url: 'https://m.sohu.com/a/1097630407_267106' }
       ]
     }
   }
