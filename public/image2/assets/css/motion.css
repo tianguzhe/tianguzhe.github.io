@@ -1,0 +1,143 @@
+/* ===== Motion =====
+   One signature effect — 顯影 "develop": images arrive blurred and desaturated, then
+   resolve like ink settling on paper. It is used wherever a picture first appears.
+   Everything else is either the single page-load sequence or a direct response to
+   a user action (switch, open, drop). Loaded last so it can layer onto every component. */
+:root {
+  --ease-out: cubic-bezier(.16,1,.3,1);
+  --ease-in-out: cubic-bezier(.65,0,.35,1);
+  --ease-spring: cubic-bezier(.34,1.4,.64,1);
+  --develop: 820ms;
+}
+
+@keyframes develop {
+  from { opacity: 0; filter: blur(16px) saturate(0.2) contrast(0.85); transform: scale(1.02); }
+  45%  { opacity: 1; }
+  to   { opacity: 1; filter: none; transform: none; }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop { from { opacity: 0; transform: translateY(-4px) scale(0.97); } to { opacity: 1; transform: none; } }
+
+/* --- Page load: the seal stamps, then the sidebar settles in order --- */
+@keyframes stamp {
+  0%   { opacity: 0; transform: scale(1.5) rotate(-12deg); }
+  60%  { opacity: 1; transform: scale(0.94) rotate(2deg); }
+  100% { opacity: 1; transform: none; }
+}
+.seal { animation: stamp 700ms var(--ease-out) 60ms both; }
+.brand-text { animation: rise 520ms var(--ease-out) 180ms both; }
+.panel-header .tabs { animation: rise 520ms var(--ease-out) 240ms both; }
+.panel-body { animation: rise 560ms var(--ease-out) 300ms both; }
+.panel-footer { animation: rise 560ms var(--ease-out) 360ms both; }
+.gallery-header { animation: fade 600ms ease-out 200ms both; }
+
+/* --- Gallery: develop row by row, columns slightly offset --- */
+.gallery-item {
+  --row: 0; --col: 0;
+  animation: develop var(--develop) var(--ease-out) both;
+  animation-delay: calc(var(--row) * 70ms + var(--col) * 40ms + 120ms);
+}
+.gallery-col:nth-child(2) .gallery-item { --col: 1; }
+.gallery-col:nth-child(3) .gallery-item { --col: 2; }
+.gallery-col:nth-child(4) .gallery-item { --col: 3; }
+.gallery-col .gallery-item:nth-child(2) { --row: 1; }
+.gallery-col .gallery-item:nth-child(3) { --row: 2; }
+.gallery-col .gallery-item:nth-child(4) { --row: 3; }
+.gallery-col .gallery-item:nth-child(5) { --row: 4; }
+.gallery-col .gallery-item:nth-child(n+6) { --row: 5; }
+
+.gallery-item img { transition: transform 900ms var(--ease-out); }
+.gallery-item:hover img { transform: scale(1.03); }
+.gallery-overlay > * { transform: translateY(6px); transition: transform 360ms var(--ease-out); }
+.gallery-item:hover .gallery-overlay > *, .gallery-item:focus-within .gallery-overlay > * { transform: none; }
+
+/* --- Streaming: ink wash while waiting, then the first partial develops --- */
+@keyframes inkWash {
+  from { background-position: 0% 20%, 100% 80%; }
+  to   { background-position: 100% 60%, 0% 30%; }
+}
+.stream-preview:has(#streamImg[hidden])::after {
+  content: ''; display: block; height: 220px; margin-top: 12px; border-radius: 8px;
+  background:
+    radial-gradient(45% 70% at 50% 50%, rgba(21,23,28,0.12), transparent 70%),
+    radial-gradient(40% 60% at 50% 50%, rgba(211,58,37,0.12), transparent 70%),
+    var(--surface);
+  background-size: 180% 180%, 160% 160%, auto;
+  animation: inkWash 3.6s var(--ease-in-out) infinite alternate;
+}
+.stream-preview { animation: rise 420ms var(--ease-out) both; }
+#streamImg:not([hidden]) { animation: develop var(--develop) var(--ease-out) both; }
+
+/* --- Segmented controls: one indicator slides between options --- */
+.tabs, .view-switch { position: relative; isolation: isolate; }
+.view-switch { display: grid; grid-template-columns: 1fr 1fr; }
+.tabs::before, .view-switch::before {
+  content: ''; position: absolute; z-index: -1;
+  top: 3px; bottom: 3px; left: 3px; width: calc((100% - 8px) / 2);
+  border-radius: 7px; background: var(--panel);
+  box-shadow: 0 1px 2px rgba(21,23,28,0.12), 0 2px 8px -2px rgba(21,23,28,0.08);
+  transition: transform 380ms var(--ease-out);
+}
+.tabs:has(.tab:nth-child(2).active)::before,
+.view-switch:has(button:nth-child(2).active)::before { transform: translateX(calc(100% + 2px)); }
+.tab.active, .view-switch button.active { background: transparent; box-shadow: none; }
+
+.tab-content.active { animation: rise 340ms var(--ease-out) both; }
+
+/* --- Disclosure height animates where the browser supports it; elsewhere it just opens --- */
+.disclosure { interpolate-size: allow-keywords; }
+.disclosure::details-content {
+  height: 0; overflow: clip;
+  transition: height 320ms var(--ease-out), content-visibility 320ms allow-discrete;
+}
+.disclosure[open]::details-content { height: auto; }
+
+/* --- Buttons --- */
+@keyframes sheen { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+.btn-primary { position: relative; overflow: hidden; transition: background var(--transition), box-shadow 240ms var(--ease-out), transform 240ms var(--ease-out); }
+.btn-primary:not(:disabled):hover { transform: translateY(-1px); }
+.btn-primary:not(:disabled):active { transform: scale(0.985); transition-duration: 80ms; }
+/* A disabled primary button means a request is running: a light sweep shows it is working. */
+.btn-primary:disabled::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 25%, rgba(255,255,255,0.38) 50%, transparent 75%);
+  animation: sheen 1.5s var(--ease-in-out) infinite;
+}
+.chat-send:not(:disabled):active, .conn-notice button:active { transform: scale(0.96); }
+.chat-send, .conn-notice button { transition: background var(--transition), transform 160ms var(--ease-out); }
+
+/* --- Popovers, dialog, lightbox --- */
+.settings-panel.open { animation: pop 200ms var(--ease-out) both; transform-origin: top right; }
+.chat-hist-panel.open { animation: pop 200ms var(--ease-out) both; transform-origin: top right; }
+@keyframes dialogIn { from { opacity: 0; transform: translateY(10px) scale(0.97); } to { opacity: 1; transform: none; } }
+.conn-dialog[open] { animation: dialogIn 320ms var(--ease-out) both; }
+.conn-dialog[open]::backdrop { animation: fade 240ms ease-out both; }
+@keyframes lbZoom { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
+.lightbox.open { animation: fade 220ms ease-out both; }
+.lightbox.open .lightbox-wrap { animation: lbZoom 460ms var(--ease-out) both; }
+.lightbox.open .lightbox-wrap img { animation: develop var(--develop) var(--ease-out) 60ms both; }
+
+/* --- Drop zones and thumbnails --- */
+.drop-zone { transition: border-color var(--transition), background var(--transition), box-shadow 240ms var(--ease-out), transform 240ms var(--ease-out); }
+.drop-zone.dragover { transform: scale(1.012); box-shadow: 0 0 0 4px var(--accent-glow); }
+@keyframes thumbIn { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: none; } }
+.drop-zone-preview .thumb-wrap { animation: thumbIn 320ms var(--ease-spring) both; }
+
+/* --- Chat: only the newest message animates, since the list re-renders as a whole --- */
+@keyframes fromRight { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+.chat-msg.user:last-child { animation: fromRight 380ms var(--ease-out) both; }
+.chat-msg.image:last-child .chat-img-card img { animation: develop var(--develop) var(--ease-out) both; }
+
+.gallery-empty { animation: rise 600ms var(--ease-out) 300ms both; }
+
+/* The global reduced-motion rule shortens animations but would make infinite loops flicker. */
+@media (prefers-reduced-motion: reduce) {
+  /* Durations are already near zero globally; drop the stagger delays too so nothing appears late. */
+  *, *::before, *::after { animation-delay: 0s !important; }
+  .btn-primary:disabled::after,
+  .stream-preview:has(#streamImg[hidden])::after,
+  .spinner, .gallery-item.loading { animation: none !important; }
+  .gallery-item img, .tabs::before, .view-switch::before { transition: none !important; }
+  .gallery-item:hover img { transform: none; }
+}

@@ -1,0 +1,100 @@
+/* ===== Gallery canvas ===== */
+.gallery-area {
+  flex: 1; overflow-y: auto; padding: 0 24px 24px;
+  position: relative;
+  /* Faint dot grid, like a light table, so the canvas has texture without tinting images. */
+  background: radial-gradient(circle, rgba(21,23,28,0.09) 1px, transparent 1.3px) 0 0 / 20px 20px, var(--bg);
+}
+.gallery-header {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  margin: 0 -24px 16px; padding: 12px 24px;
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(236,238,241,0.86);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.gallery-header-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.gallery-count { color: var(--text-tertiary); font-size: 12px; font-variant-numeric: tabular-nums; }
+.fs-dir-status { color: var(--text-tertiary); font-size: 12px; }
+.gallery-actions-right { display: flex; gap: 4px; align-items: center; }
+/* The view switch already names the current view; keep the h2 for screen readers only. */
+#galleryHeading {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+/* Filter + sort: quiet text buttons; the active filter is the only fill. */
+.gallery-filter { display: flex; gap: 2px; }
+.gallery-filter button, .gallery-sort-btn {
+  padding: 5px 11px; border-radius: var(--radius); font-size: 12px;
+  font-family: inherit; cursor: pointer; white-space: nowrap;
+  border: 0; background: transparent; color: var(--text-secondary);
+  transition: background var(--transition), color var(--transition);
+}
+.gallery-filter button:hover, .gallery-sort-btn:hover { color: var(--text-primary); background: rgba(21,23,28,0.05); }
+.gallery-filter button.active { color: var(--text-primary); background: var(--panel); box-shadow: 0 1px 2px rgba(21,23,28,0.08); }
+.gallery-sort-btn { font-variant-numeric: tabular-nums; }
+
+.gallery-grid { display: flex; gap: 12px; }
+.gallery-col { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+@media (min-width: 1400px) { .gallery-grid { --gallery-cols: 3; } }
+@media (min-width: 1800px) { .gallery-grid { --gallery-cols: 4; } }
+
+.gallery-item {
+  position: relative; border-radius: 10px; overflow: hidden;
+  cursor: zoom-in; background: var(--surface-2);
+  box-shadow: 0 0 0 1px rgba(21,23,28,0.06);
+  transition: box-shadow var(--transition);
+}
+.gallery-item:hover { box-shadow: 0 0 0 1px rgba(21,23,28,0.1), 0 8px 24px rgba(21,23,28,0.12); }
+.gallery-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.gallery-item img { display: block; width: 100%; }
+/* Overlay sits on image content, so it keeps its own dark scrim regardless of theme. */
+.gallery-overlay {
+  position: absolute; inset: auto 0 0 0;
+  background: linear-gradient(transparent, rgba(12,13,15,0.86) 46%);
+  opacity: 0; transition: opacity var(--transition);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 36px 12px 10px;
+}
+.gallery-item:hover .gallery-overlay, .gallery-item:focus-within .gallery-overlay { opacity: 1; }
+.gallery-overlay .prompt-preview {
+  font-size: 12px; color: #eceef1; line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.gallery-overlay .meta-row {
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; margin-top: 8px;
+}
+.gallery-overlay .meta-row .time { font-size: 11px; color: rgba(236,238,241,0.6); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.gallery-overlay .meta-actions { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.gallery-overlay .meta-row a,
+.gallery-overlay .meta-actions button {
+  padding: 4px 9px; border-radius: 6px; font-size: 11px; font-family: inherit;
+  background: rgba(255,255,255,0.14); color: #fff; border: none; text-decoration: none;
+  cursor: pointer; transition: background var(--transition);
+}
+.gallery-overlay .meta-row a:hover,
+.gallery-overlay .meta-actions button:hover { background: rgba(255,255,255,0.26); }
+.gallery-chat-btn { background: var(--accent) !important; }
+.gallery-chat-btn:hover { background: var(--accent-deep) !important; }
+.gallery-del-btn:hover, .lightbox-del-btn:hover { background: rgba(211,58,37,0.8) !important; }
+
+.gallery-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  height: calc(100% - 80px); text-align: center;
+  color: var(--text-secondary); font-size: 14px; font-weight: 500;
+}
+.gallery-empty-hint { color: var(--text-tertiary); font-size: 12px; font-weight: 400; }
+.gallery-empty-icon {
+  width: 64px; height: 64px; margin-bottom: 10px; border-radius: 18px;
+  background: var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28' fill='none' stroke='%23646b75' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='5' width='21' height='18' rx='3'/%3E%3Cpath d='M3.5 19l6-6 4.5 4.5 3-3 7.5 7'/%3E%3Ccircle cx='19' cy='10.5' r='1.8' fill='%23d33a25' stroke='none'/%3E%3C/svg%3E") center / 28px no-repeat;
+  box-shadow: 0 0 0 1px rgba(21,23,28,0.05), 0 10px 24px -10px rgba(21,23,28,0.2);
+}
+
+.fs-unlock {
+  position: absolute; inset: 0; z-index: 20;
+  align-items: center; justify-content: center; background: var(--bg);
+}
+.fs-unlock button {
+  padding: 12px 26px; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: inherit;
+  cursor: pointer; border: 0; background: var(--ink); color: var(--on-ink);
+}

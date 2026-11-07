@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="墨境工坊 - GPT Image 視覺煉金實驗室，支援圖片生成、編輯和對話微調">
+<!-- 圖片微調使用 fetch() 讀取本地 blob: / data: 圖片，需由 connect-src 明確允許。 -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https: http://localhost:* http://127.0.0.1:* http://[::1]:*; connect-src 'self' blob: data: https: http://localhost:* http://127.0.0.1:* http://[::1]:*; script-src 'self' 'unsafe-inline';">
+<title>墨境 · GPT Image 實驗工坊</title>
+<!-- Published at tianguzhe.github.io/image2/; the site check requires canonical and share-card metadata. -->
+<link rel="canonical" href="https://tianguzhe.github.io/image2/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="墨境工坊 · GPT Image 生成與編輯">
+<meta property="og:description" content="在瀏覽器裡用 GPT Image 生成、編輯圖片，並以對話逐輪微調。連線設定只保存在本機。">
+<meta property="og:url" content="https://tianguzhe.github.io/image2/">
+<meta property="og:image" content="https://tianguzhe.github.io/image2/assets/social.png">
+<meta property="og:image:alt" content="墨境工坊介面：左側填寫提示詞與參數，右側是生成圖片的畫廊。">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23efe9dc'/><path d='M7 21c2.5-11 8.5-13 12.5-9.5 3.2 2.8 1.4 7.6-2.8 8.4-3.2.6-5.2-2-3.2-4.4' fill='none' stroke='%23211f1b' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/><rect x='19.5' y='19' width='8' height='8' rx='1.6' fill='%23b23a2e'/></svg>">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/gallery.css">
+<link rel="stylesheet" href="assets/css/controls.css">
+<link rel="stylesheet" href="assets/css/overlays.css">
+<link rel="stylesheet" href="assets/css/chat.css">
+<link rel="stylesheet" href="assets/css/motion.css">
+</head>
+<body>
+<div class="app">
+  <aside class="panel">
+    <header class="panel-header">
+      <div class="brand">
+        <span class="seal" aria-hidden="true">墨</span>
+        <div class="brand-text">
+          <h1>墨境工坊</h1>
+          <p id="modelName"></p>
+        </div>
+      </div>
+      <div class="tabs" role="tablist" aria-label="模式">
+        <button type="button" class="tab active" onclick="switchTab('generate')">生成</button>
+        <button type="button" class="tab" onclick="switchTab('edit')">編輯</button>
+      </div>
+    </header>
+
+    <div class="panel-body">
+      <div id="connNotice" class="conn-notice" hidden>
+        <span>還沒有設定 API 位址</span>
+        <button type="button" onclick="openConnectionSettings()">設定連線</button>
+      </div>
+
+      <div id="tab-generate" class="tab-content active">
+        <div class="form-group">
+          <label for="prompt">提示詞 <span class="hint">用途、主體、構圖、光線、限制</span></label>
+          <textarea id="prompt" placeholder="水彩插畫：一隻白色柴犬在星空下的草原奔跑，側面全身，遠景低角度，冷藍夜色帶暖色星光。要出現的文字用引號標明，例如標題「夜行」；不要其他文字或浮水印"></textarea>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label for="size">尺寸</label>
+            <select id="size">
+              <option value="auto">自動</option>
+              <optgroup label="標準">
+                <option value="1024x1024" selected>正方形 1024×1024</option>
+                <option value="1536x1024">橫向 1536×1024</option>
+                <option value="1024x1536">直向 1024×1536</option>
+              </optgroup>
+              <optgroup label="2K">
+                <option value="2048x2048">正方形 2048×2048（實驗性）</option>
+                <option value="2048x1152">橫向 2048×1152</option>
+                <option value="1152x2048">直向 1152×2048</option>
+              </optgroup>
+              <optgroup label="4K（實驗性）">
+                <option value="3840x2160">橫向 3840×2160</option>
+                <option value="2160x3840">直向 2160×3840</option>
+              </optgroup>
+              <option value="custom">自訂尺寸…</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="quality">品質</label>
+            <select id="quality">
+              <option value="auto">自動</option>
+              <option value="low">低</option>
+              <option value="medium">中</option>
+              <option value="high" selected>高</option>
+              <option value="xhigh">極高</option>
+              <option value="max">最高</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" id="customSizeGroup" style="display:none;">
+          <label for="customSize">自訂尺寸 <span class="hint">寬×高，支援範圍依服務商而定</span></label>
+          <input type="text" id="customSize" placeholder="1580×996">
+        </div>
+        <details class="disclosure">
+          <summary>輸出設定 <span class="hint">格式、背景、過程預覽</span></summary>
+          <div class="disclosure-body">
+            <div class="row">
+              <div class="form-group">
+                <label for="format">格式</label>
+                <select id="format">
+                <option value="png">PNG</option>
+                <option value="jpeg">JPEG</option>
+                <option value="webp">WebP</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="background">背景</label>
+                <select id="background">
+                <option value="auto" selected>自動</option>
+                <option value="opaque">不透明</option>
+                <option value="transparent">透明（PNG / WebP）</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" id="compressionGroup" style="display:none;">
+              <label for="compression">壓縮率 <span class="hint" id="compressionVal">50%</span></label>
+              <input type="range" id="compression" min="0" max="100" value="50">
+            </div>
+            <div class="form-group">
+              <label for="partials">過程預覽 <span class="hint">生成中先顯示草圖</span></label>
+              <select id="partials">
+                <option value="0">關閉</option>
+                <option value="1">1 張</option>
+                <option value="2" selected>2 張</option>
+                <option value="3">3 張</option>
+              </select>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div id="tab-edit" class="tab-content">
+        <div class="form-group">
+          <label>圖片 <span class="hint">PNG / JPEG / WebP，每張小於 50MB，最多 16 張</span></label>
+          <div class="drop-zone" id="editDropZone" tabindex="0">
+            <div class="drop-zone-text" id="editDropText">Ctrl+V 貼上或拖放圖片到此處</div>
+            <div class="drop-zone-preview" id="editPreview"></div>
+            <input type="file" id="editImage" accept="image/png,image/jpeg,image/webp" multiple style="display:none;" aria-label="選擇編輯圖片">
+            <button type="button" class="drop-zone-browse" onclick="document.getElementById('editImage').click()">選擇檔案</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="editPrompt">提示詞 <span class="hint">只改哪裡、保留什麼；多張圖請標明各自用途</span></label>
+          <textarea id="editPrompt" placeholder="只把背景換成海灘日落，保留人物的臉、髮型、姿勢、服裝與光線方向不變；不要加入文字或浮水印"></textarea>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label for="editSize">尺寸</label>
+            <select id="editSize">
+              <option value="auto">自動</option>
+              <optgroup label="標準">
+                <option value="1024x1024" selected>正方形 1024×1024</option>
+                <option value="1536x1024">橫向 1536×1024</option>
+                <option value="1024x1536">直向 1024×1536</option>
+              </optgroup>
+              <optgroup label="2K">
+                <option value="2048x2048">正方形 2048×2048（實驗性）</option>
+                <option value="2048x1152">橫向 2048×1152</option>
+                <option value="1152x2048">直向 1152×2048</option>
+              </optgroup>
+              <optgroup label="4K（實驗性）">
+                <option value="3840x2160">橫向 3840×2160</option>
+                <option value="2160x3840">直向 2160×3840</option>
+              </optgroup>
+              <option value="custom">自訂尺寸…</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editQuality">品質</label>
+            <select id="editQuality">
+              <option value="auto">自動</option>
+              <option value="low">低</option>
+              <option value="medium">中</option>
+              <option value="high" selected>高</option>
+              <option value="xhigh">極高</option>
+              <option value="max">最高</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" id="editCustomSizeGroup" style="display:none;">
+          <label for="editCustomSize">自訂尺寸 <span class="hint">寬×高，支援範圍依服務商而定</span></label>
+          <input type="text" id="editCustomSize" placeholder="1580×996">
+        </div>
+        <details class="disclosure">
+          <summary>遮罩 <span class="hint">選填，只修改指定區域</span></summary>
+          <div class="disclosure-body">
+            <p class="disclosure-note">PNG 含透明通道、與第一張圖同尺寸，透明處為修改區。</p>
+            <div class="drop-zone drop-zone-sm" id="maskDropZone" tabindex="0" aria-label="遮罩">
+              <div class="drop-zone-text" id="maskDropText">Ctrl+V 或拖放遮罩</div>
+              <div class="drop-zone-preview" id="maskPreview"></div>
+              <input type="file" id="editMask" accept="image/png" style="display:none;" aria-label="選擇遮罩圖片">
+              <button type="button" class="drop-zone-browse" onclick="document.getElementById('editMask').click()">選擇檔案</button>
+            </div>
+          </div>
+        </details>
+        <details class="disclosure">
+          <summary>輸出設定 <span class="hint">格式、背景</span></summary>
+          <div class="disclosure-body">
+            <div class="row">
+              <div class="form-group">
+                <label for="editFormat">格式</label>
+                <select id="editFormat">
+                <option value="png">PNG</option>
+                <option value="jpeg">JPEG</option>
+                <option value="webp">WebP</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="editBackground">背景</label>
+                <select id="editBackground">
+                <option value="auto" selected>自動</option>
+                <option value="opaque">不透明</option>
+                <option value="transparent">透明（PNG / WebP）</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" id="editCompressionGroup" style="display:none;">
+              <label for="editCompression">壓縮率 <span class="hint" id="editCompressionVal">50%</span></label>
+              <input type="range" id="editCompression" min="0" max="100" value="50">
+            </div>
+            
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <footer class="panel-footer">
+      <div class="action-row" id="generateActions">
+        <button onclick="generate()" id="generateBtn" class="btn-primary">生成圖片</button>
+        <button type="button" onclick="stopGenerate()" id="stopGenBtn" class="btn-stop" style="display:none;">停止</button>
+      </div>
+      <div class="action-row" id="editActions">
+        <button onclick="editImage()" id="editBtn" class="btn-primary">編輯圖片</button>
+        <button type="button" onclick="stopEdit()" id="stopEditBtn" class="btn-stop" style="display:none;">停止</button>
+      </div>
+      <div class="progress-bar" id="uploadProgress"><div class="progress-bar-fill" id="uploadProgressFill"></div></div>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+    </footer>
+  </aside>
+
+  <main class="gallery-area">
+    <div class="gallery-header">
+      <div class="gallery-header-left">
+        <div class="view-switch" id="viewSwitch">
+          <button class="active" data-view="gallery" onclick="switchView('gallery')">畫廊</button>
+          <button data-view="chat" onclick="switchView('chat')">對話</button>
+        </div>
+        <h2 id="galleryHeading">畫廊</h2>
+        <span class="gallery-count" id="galleryCount"></span>
+        <span id="fsDirStatus" class="fs-dir-status" style="display:none;"></span>
+      </div>
+      <div class="gallery-actions-right">
+        <div class="gallery-filter">
+          <button class="active" onclick="filterGallery('all', this)">全部</button>
+          <button onclick="filterGallery('generate', this)">生成</button>
+          <button onclick="filterGallery('edit', this)">編輯</button>
+        </div>
+        <button class="gallery-sort-btn" id="sortBtn" onclick="toggleSort()" title="排序">新→舊 ↓</button>
+        <div class="settings-wrap">
+          <button class="settings-toggle" onclick="toggleSettingsPanel()" aria-label="設定">&#9881;</button>
+          <div class="settings-panel" id="settingsPanel">
+            <button onclick="openConnectionSettings()">連線設定</button>
+            <hr>
+            <span class="settings-info" id="storageMode"></span>
+            <span class="settings-info" id="storageUsage"></span>
+            <button id="fsDirBtn" style="display:none" onclick="pickDirectory()">設定資料夾</button>
+            <button onclick="exportAll()">匯出備份</button>
+            <button onclick="document.getElementById('importFile').click()">匯入備份</button>
+            <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importAll(this)" aria-label="選擇匯入檔案">
+            <hr>
+            <button class="danger" onclick="clearHistory()">清除全部資料</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="fsUnlockOverlay" class="fs-unlock" style="display:none;">
+      <button onclick="requestDirPermission()">點擊解鎖圖庫</button>
+    </div>
+    <div id="streamPreview" class="stream-preview" style="display:none;">
+      <div class="stream-preview-head">
+        <span class="spinner"></span>
+        <span id="streamStage">等待串流事件…</span>
+        <span class="stream-elapsed" id="streamElapsed">0.0s</span>
+      </div>
+      <img id="streamImg" alt="串流預覽" width="1024" height="1024" hidden>
+    </div>
+    <div id="galleryGrid" class="gallery-grid"></div>
+    <div id="galleryEmpty" class="gallery-empty">
+      <div class="gallery-empty-icon" aria-hidden="true"></div>
+      <p>還沒有圖片</p>
+      <p class="gallery-empty-hint">在左側寫下提示詞，再點「生成圖片」。</p>
+    </div>
+
+    <div id="chatArea" class="chat-area">
+      <div class="chat-bar">
+        <button class="chat-bar-btn" id="chatNewBtn" onclick="newConversation()">＋ 新對話</button>
+        <span class="chat-title" id="chatTitle">新對話</span>
+        <div class="chat-bar-right">
+          <div class="chat-hist-wrap">
+            <button class="chat-bar-btn" id="chatHistBtn" onclick="toggleChatHistory()">會話歷史 ▾</button>
+            <div class="chat-hist-panel" id="chatHistPanel"></div>
+          </div>
+          <button class="chat-bar-btn danger" id="chatDelBtn" onclick="deleteActiveConversation()">刪除</button>
+        </div>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-composer">
+        <textarea id="chatInput" rows="1" aria-label="對話提示詞" placeholder="一次只改一處，例如：只把背景換成海灘日落，其餘保持不變"></textarea>
+        <button id="chatSendBtn" class="chat-send" onclick="chatSendOrStop()">送出</button>
+      </div>
+      <div class="chat-status" id="chatStatus" role="status" aria-live="polite"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Connection settings: set once, so they live outside the creative flow. -->
+<dialog id="connDialog" class="conn-dialog" aria-labelledby="connDialogTitle" onclick="if(event.target===this)this.close()">
+  <div class="conn-dialog-inner">
+    <h2 id="connDialogTitle">連線設定</h2>
+    <p class="conn-dialog-note">設定只保存在這個瀏覽器。</p>
+    <div class="form-group">
+      <label for="baseUrl">API 位址</label>
+      <input type="text" id="baseUrl" placeholder="https://api.openai.com/v1" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="form-group">
+      <label for="apiKey">API Key <span class="hint">服務商不需要時可留空</span></label>
+      <input type="password" id="apiKey" placeholder="sk-…" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label for="imageModel">模型 <span class="hint">留空使用預設模型</span></label>
+      <input type="text" id="imageModel" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="conn-dialog-actions">
+      <button type="button" class="btn-primary" onclick="document.getElementById('connDialog').close()">完成</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" aria-label="圖片預覽" onclick="if(event.target===this)closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()" aria-label="關閉圖片預覽">&times;</button>
+  <button class="lightbox-nav prev" id="lightboxPrev" onclick="lightboxNav(-1)" aria-label="上一張">&#8249;</button>
+  <button class="lightbox-nav next" id="lightboxNext" onclick="lightboxNav(1)" aria-label="下一張">&#8250;</button>
+  <div class="lightbox-wrap">
+    <img id="lightboxImg" alt="" width="1024" height="1024">
+    <div class="lightbox-overlay">
+      <div class="prompt-full" id="lightboxPrompt" onclick="event.stopPropagation();this.classList.toggle('expanded')"></div>
+      <div class="lightbox-meta">
+        <span class="lightbox-counter" id="lightboxCounter"></span>
+        <div class="lightbox-actions">
+          <button onclick="event.stopPropagation();startChatFromLightbox()" id="lightboxChat">對話微調</button>
+          <button onclick="event.stopPropagation();copyPrompt()" id="lightboxCopy">複製提示詞</button>
+          <a id="lightboxDl" download="" onclick="event.stopPropagation()">下載</a>
+          <button onclick="event.stopPropagation();deleteLightboxImage()" id="lightboxDel" class="lightbox-del-btn">刪除</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ordered classic scripts keep direct file:// opening supported. app.js initializes last. -->
+<script defer src="assets/js/config.js"></script>
+<script defer src="assets/js/state.js"></script>
+<script defer src="assets/js/utils.js"></script>
+<script defer src="assets/js/storage.js"></script>
+<script defer src="assets/js/filesystem.js"></script>
+<script defer src="assets/js/settings.js"></script>
+<script defer src="assets/js/api.js"></script>
+<script defer src="assets/js/gallery.js"></script>
+<script defer src="assets/js/editor.js"></script>
+<script defer src="assets/js/backup.js"></script>
+<script defer src="assets/js/chat.js"></script>
+<script defer src="assets/js/chat-ui.js"></script>
+<script defer src="assets/js/app.js"></script>
+</body>
+</html>

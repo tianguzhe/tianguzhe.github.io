@@ -14,7 +14,7 @@ function walk(path) {
   }
 }
 walk(root);
-assert.equal(htmlFiles.length, slugs.length + 3, 'Expected homepage, product pages, today calendar and 404');
+assert.equal(htmlFiles.length, slugs.length + 4, 'Expected homepage, product pages, today calendar, image2 and 404');
 const titles = new Set();
 const errors = [];
 let references = 0;
@@ -24,7 +24,7 @@ for (const file of htmlFiles) {
   assert.ok(title && !titles.has(title), `Missing or duplicate title: ${file}`);
   titles.add(title);
   assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1, `Expected one h1: ${file}`);
-  assert.match(html, /<html lang="zh-CN"/, `Missing language: ${file}`);
+  assert.match(html, /<html lang="zh-(CN|TW)"/, `Missing language: ${file}`);
   assert.match(html, /name="description" content="[^"]+"/, `Missing description: ${file}`);
   assert.match(html, /name="viewport"/, `Missing viewport: ${file}`);
   assert.match(html, /rel="canonical" href="https:\/\/tianguzhe\.github\.io\//, `Missing canonical: ${file}`);
@@ -69,9 +69,11 @@ for (const [index, slug] of slugs.entries()) {
   assert.ok(html.includes('Apple 公证'), `Missing installation information: ${slug}`);
 }
 assert.match(readFileSync(join(root, '404.html'), 'utf8'), /name="robots" content="noindex"/);
-assert.equal((readFileSync(join(root, 'sitemap.xml'), 'utf8').match(/<url>/g) || []).length, slugs.length + 2);
+assert.equal((readFileSync(join(root, 'sitemap.xml'), 'utf8').match(/<url>/g) || []).length, slugs.length + 3);
 assert.ok(existsSync(join(root, 'robots.txt')));
 assert.ok(readFileSync(join(root, 'sitemap.xml'), 'utf8').includes('https://tianguzhe.github.io/today/'));
 assert.ok(existsSync(join(root, 'today', 'index.html')));
+assert.ok(readFileSync(join(root, 'sitemap.xml'), 'utf8').includes('https://tianguzhe.github.io/image2/'));
+assert.ok(existsSync(join(root, 'image2', 'index.html')));
 assert.deepEqual(errors, [], 'Broken internal links or assets');
 console.log(`Verified ${htmlFiles.length} pages, ${references} local references, metadata, downloads and structured data.`);
